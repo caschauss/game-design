@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import { MantineProvider } from '@mantine/core'
+import { PartyButtonBox } from './PartyButtonBox';
 
 function App() {
   const [score, setScore] = useState(0);
@@ -17,7 +18,7 @@ function App() {
           <p style={{height: "20vh"}}>Hier kommt eine Beschreibung hin</p>
 
           <p style={{height: "15vh"}}>Aktueller Score: {score}</p>
-          <button onClick={handleButtonClick} style={{width: "100vw", height: "50vh"}}>Hier kommen die Buttons hin</button>
+          <PartyButtonBox handleButtonClick={handleButtonClick}/>
         </div></div>
     </MantineProvider>
   )
