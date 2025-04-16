@@ -1,30 +1,25 @@
 import { useState } from 'react'
 import './App.css'
+import { MantineProvider } from '@mantine/core'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [score, setScore] = useState(0);
 
+  const handleButtonClick = () => {
+    setScore(score + 1);
+  }
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-        </a>
-        <a href="https://react.dev" target="_blank">
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <MantineProvider >
+      <div style={{ textAlign: "center" }}>
+        <div style={{ width: "100%", alignItems: "center" }}>
+
+          <h1 style={{height: "10vh"}}>Titel des Spiels</h1>
+          <p style={{height: "20vh"}}>Hier kommt eine Beschreibung hin</p>
+
+          <p style={{height: "15vh"}}>Aktueller Score: {score}</p>
+          <button onClick={handleButtonClick} style={{width: "100vw", height: "50vh"}}>Hier kommen die Buttons hin</button>
+        </div></div>
+    </MantineProvider>
   )
 }
 
