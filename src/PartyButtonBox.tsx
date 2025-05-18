@@ -4,13 +4,15 @@ import expressions from './expressions.json'
 
 interface PartyButtonBoxProps {
     handleButtonClick: () => void;
+    setExpression: (expression: string) => void;
 }
 
-export const PartyButtonBox: React.FC<PartyButtonBoxProps> = ({ handleButtonClick }) => {
+export const PartyButtonBox: React.FC<PartyButtonBoxProps> = ({ handleButtonClick, setExpression }) => {
     const [expressionID, setExpressionID] = useState(0);
 
     const getNewExpression = () => {
         console.log(JSON.stringify(expressions[expressionID]));
+        setExpression(expressions[expressionID].expression);
         setExpressionID(expressionID + 1);
     }
 
