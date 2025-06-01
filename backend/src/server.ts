@@ -5,7 +5,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-let selectedColour = "black";
+let selectedColor = "black";
 
 // API test route
 app.post('/test', (req, res) => {
@@ -13,10 +13,17 @@ app.post('/test', (req, res) => {
   res.json({ "message": "test" });
 });
 
-app.post('/getcolour', (req, res) => {
+app.post('/getcolor', (req, res) => {
   let datetime = new Date();
   console.log("Received colour request at " + datetime);
-  res.json({"colour": selectedColour});
+  res.json({"color": selectedColor});
+})
+
+app.post('/setcolor', (req, res) => {
+  let datetime = new Date();
+  console.log("Received colour modification at " + datetime);
+  selectedColor = req.body.color;
+  res.json({"message": "ok"});
 })
 
 // Setup
