@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-interface RoundInformation {
+interface ExpressionData {
   expression: string;
   name: string;
   party: string;
@@ -30,7 +30,7 @@ export const setColor = (model_setSelectedColor: (color: string) => void) => {
 };
 
 // Getting current round information
-export const getCurrentRoundInformation = (model_getRoundInformation: () => RoundInformation) => {
+export const getCurrentRoundInformation = (model_getRoundInformation: () => ExpressionData) => {
     return (req: Request, res: Response) => {
         let datetime = new Date();
         console.log("Received round information request at " + datetime);

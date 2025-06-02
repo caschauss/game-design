@@ -1,4 +1,4 @@
-interface RoundInformation {
+interface ExpressionData {
     expression: string;
     name: string;
     party: string;
@@ -8,7 +8,7 @@ interface RoundInformation {
     link: string;
 }
 
-let roundInformation: RoundInformation = {
+let roundInformation: ExpressionData = {
     "expression": "placeholder expression",
     "name": "placeholder name",
     "party": "placeholder party",
@@ -26,7 +26,7 @@ export const model_getRoundInformation = () => {
 };
 
 // Setting current round information
-export const model_setRoundInformation = (newRoundInformation: RoundInformation) => {
+export const model_setRoundInformation = (newRoundInformation: ExpressionData) => {
     roundInformation = newRoundInformation;
 };
 
