@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { getColor, setColor, testApi } from './api';
+import { getColor, getCurrentRoundInformation, setColor, testApi } from './api';
 
 const app = express();
 app.use(cors());
@@ -14,7 +14,17 @@ const handleGetColor = () => {
   return selectedColor;
 }
 
-let currentRoundInformation = {
+interface RoundInformation {
+  expression: string;
+  name: string;
+  party: string;
+  difficulty: number;
+  date: string;
+  context: string;
+  link: string;
+}
+
+let currentRoundInformation: RoundInformation = {
   "expression": "placeholder expression",
   "name": "placeholder name",
   "party": "placeholder party",
@@ -24,10 +34,14 @@ let currentRoundInformation = {
   "link": "placeholder link"
 }
 
+const handleGetCurrentRoundInformation = () => {
+  return currentRoundInformation;
+}
 
 app.post('/setcolor', setColor(handleSetColor));
 app.post('/getcolor', getColor(handleGetColor));
 app.post('/testapi', testApi());
+app.post('/getroundinformation', getCurrentRoundInformation(handleGetCurrentRoundInformation));
 
 app.post('/getroundinformation', (req, res) => {
   let datetime = new Date();

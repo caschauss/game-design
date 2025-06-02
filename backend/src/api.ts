@@ -1,5 +1,15 @@
 import { Request, Response } from 'express';
 
+interface RoundInformation {
+  expression: string;
+  name: string;
+  party: string;
+  difficulty: number;
+  date: string;
+  context: string;
+  link: string;
+}
+
 // Getting current color
 export const getColor = (handleGetColor: () => string) => {
     return (req: Request, res: Response) => {
@@ -18,6 +28,16 @@ export const setColor = (handleSetColor: (color: string) => void) => {
         res.json({ "message": "ok" });
     };
 };
+
+// Getting current round information
+export const getCurrentRoundInformation = (handleGetCurrentRoundInformation: () => RoundInformation) => {
+    return (req: Request, res: Response) => {
+        let datetime = new Date();
+        console.log("Received round information request at " + datetime);
+        res.json({ "roundInformation": handleGetCurrentRoundInformation() });
+    };
+};
+
 
 // API test route
 export const testApi = () => {
