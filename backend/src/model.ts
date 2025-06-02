@@ -8,7 +8,7 @@ interface RoundInformation {
     link: string;
 }
 
-let currentRoundInformation: RoundInformation = {
+let roundInformation: RoundInformation = {
     "expression": "placeholder expression",
     "name": "placeholder name",
     "party": "placeholder party",
@@ -18,7 +18,24 @@ let currentRoundInformation: RoundInformation = {
     "link": "placeholder link"
 }
 
+let selectedColor = "black";
+
 // Getting current round information
-export const handldeGetCurrentRoundInformation = () => {
-    return currentRoundInformation;
+export const model_getRoundInformation = () => {
+    return roundInformation;
 };
+
+// Setting current round information
+export const model_setRoundInformation = (newRoundInformation: RoundInformation) => {
+    roundInformation = newRoundInformation;
+};
+
+// Getting selected color
+export const model_getSelectedColor = () => {
+  return selectedColor;
+}
+
+// Setting selected color
+export const model_setSelectedColor = (newSelectedColor: string) => {
+  selectedColor = newSelectedColor;
+}
