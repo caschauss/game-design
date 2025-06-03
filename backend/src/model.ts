@@ -3,7 +3,7 @@ interface ExpressionData {
     name: string;
     party: string;
     difficulty: number;
-    date: string;
+    date: number;
     context: string;
     link: string;
 }
@@ -13,7 +13,7 @@ let roundInformation: ExpressionData = {
     "name": "placeholder name",
     "party": "placeholder party",
     "difficulty": 0,
-    "date": "placeholder date",
+    "date": 1000,
     "context": "placeholder context",
     "link": "placeholder link"
 }

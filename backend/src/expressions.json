@@ -4,16 +4,16 @@
         "name": "Hubert Aiwanger",
         "party": "Freie Wähler",
         "difficulty": 2,
-        "date": "2023",
+        "date": 2023,
         "context": "Kundgebung gegen das Heizungsgesetz",
         "link": "https://www.br.de/nachrichten/bayern/umstrittene-demo-aussagen-in-erding-aiwanger-verteidigt-haltung,Tgxs8AA"
     },
     {
-        "expression": " Bis 2021 ist Deutschlands Verwaltung komplett digital",
+        "expression": "Bis 2021 ist Deutschlands Verwaltung komplett digital",
         "name": "Peter Altmaier",
         "party": "CDU/CSU",
         "difficulty": 1,
-        "date": "2017",
+        "date": 2017,
         "link": "https://www.handelsblatt.com/politik/deutschland/altmaier-beim-handelsblatt-wirtschaftsclub-bis-2021-ist-deutschlands-verwaltung-komplett-digital/20319520.html"
     }
 ]
