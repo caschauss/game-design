@@ -4,7 +4,7 @@ interface ExpressionData {
     party: string;
     difficulty: number;
     date: number;
-    context: string;
+    context?: string;
     link: string;
 }
 
@@ -19,6 +19,7 @@ let roundInformation: ExpressionData = {
 }
 
 let selectedColor = "black";
+let expressionArray:ExpressionData[] = [];
 
 // Getting current round information
 export const model_getRoundInformation = () => {
@@ -38,4 +39,14 @@ export const model_getSelectedColor = () => {
 // Setting selected color
 export const model_setSelectedColor = (newSelectedColor: string) => {
   selectedColor = newSelectedColor;
+}
+
+// Getting selected color
+export const model_getExpressionArray = () => {
+  return expressionArray;
+}
+
+// Setting selected color
+export const model_setExpressionArray = (newExpressionArray: ExpressionData[]) => {
+  expressionArray = newExpressionArray;
 }
