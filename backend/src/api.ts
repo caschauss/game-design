@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 
 interface ExpressionData {
-  expression: string;
-  name: string;
-  party: string;
-  difficulty: number;
-  date: number;
-  context?: string;
-  link: string;
+    expression: string;
+    name: string;
+    party: string;
+    difficulty: number;
+    date: number;
+    context?: string;
+    link: string;
 }
 
 // Getting current color
@@ -34,7 +34,9 @@ export const getCurrentRoundInformation = (model_getRoundInformation: () => Expr
     return (req: Request, res: Response) => {
         let datetime = new Date();
         console.log("Received round information request at " + datetime);
-        res.json({ "roundInformation": model_getRoundInformation() });
+        let info: ExpressionData = model_getRoundInformation();
+        info.party = ""; // remove party information before sending
+        res.json({ "roundInformation": info });
     };
 };
 
