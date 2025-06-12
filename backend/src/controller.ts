@@ -37,3 +37,27 @@ export const controller_readExpressions = () => {
 
     model_setExpressionArray(newExpressionArray);
 }
+
+export const controller_newRound = () => {
+    let expressionArray: ExpressionData[] = model_getExpressionArray();
+
+    if (expressionArray.length > 0) {
+        let lastElement = expressionArray.pop();
+        if (lastElement === undefined) {
+            // Fallback Expression in case Array is empty (game finished)
+            model_setRoundInformation({
+                expression: "GAME FINISHED",
+                name: "GAME FINISHED",
+                party: "FINISHED",
+                difficulty: 0,
+                date: 0,
+                context: "GAME FINISHED",
+                link: "GAME FINISHED"
+            });
+            model_setCorrectParty("FINISHED");
+        } else {
+            model_setRoundInformation(lastElement);
+            model_setCorrectParty(lastElement.party);
+        }
+    }
+}

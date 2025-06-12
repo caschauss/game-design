@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { controller_newRound } from './controller';
 type Party = "SPD" | "CDU" | "FW" | "GRU" | "AfD" | "LNK" | "BSW" | "FDP" | "PLACEHOLDER" | "FINISHED";
 
 interface ExpressionData {
@@ -40,6 +41,16 @@ export const getCurrentRoundInformation = (model_getRoundInformation: () => Expr
         res.json({ "roundInformation": info });
     };
 };
+
+// Calling a new round
+export const callNewRound = () => {
+    return (req: Request, res: Response) => {
+        let datetime = new Date();
+        controller_newRound();
+        console.log("Received new round call at " + datetime);
+        res.json({ "message": "ok" });
+    };
+}
 
 // API test route
 export const testApi = () => {

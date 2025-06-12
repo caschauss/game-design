@@ -67,6 +67,22 @@ function App() {
     }
   };
 
+  const handleCallNewRound = async () => {
+    try {
+      await fetch("http://localhost:3000/newround", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ "message": "new round" }) // placeholder message
+      });
+
+      console.log("Successfully requested new round");
+    } catch (error) {
+      console.error("Error requesting new round: ", error);
+    }
+  };
+
   return (
     <div>
       <button onClick={handleAPItest}>Test API</button>
@@ -76,6 +92,7 @@ function App() {
       <button onClick={() => handleSetColor("black")}>Set color to black</button>
 
       <button onClick={handleGetRoundInformation}>Log round information to console</button>
+      <button onClick={handleCallNewRound}>Request new Round</button>
     </div>
   );
 }
