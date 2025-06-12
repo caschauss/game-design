@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
+type Party = "SPD" | "CDU" | "FW" | "GRU" | "AfD" | "LNK" | "BSW" | "FDP" | "PLACEHOLDER" | "FINISHED";
 
 interface ExpressionData {
     expression: string;
     name: string;
-    party: string;
+    party: Party;
     difficulty: number;
     date: number;
     context?: string;
@@ -35,7 +36,7 @@ export const getCurrentRoundInformation = (model_getRoundInformation: () => Expr
         let datetime = new Date();
         console.log("Received round information request at " + datetime);
         let info: ExpressionData = model_getRoundInformation();
-        info.party = ""; // remove party information before sending
+        info.party = "PLACEHOLDER"; // remove party information before sending
         res.json({ "roundInformation": info });
     };
 };

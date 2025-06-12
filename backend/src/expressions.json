@@ -2,7 +2,7 @@
     {
         "expression": "Jetzt ist der Punkt erreicht, wo endlich die schweigende große Mehrheit dieses Landes sich die Demokratie wieder zurückholen muss",
         "name": "Hubert Aiwanger",
-        "party": "Freie Wähler",
+        "party": "FW",
         "difficulty": 2,
         "date": 2023,
         "context": "Kundgebung gegen das Heizungsgesetz",
@@ -11,7 +11,7 @@
     {
         "expression": "Bis 2021 ist Deutschlands Verwaltung komplett digital",
         "name": "Peter Altmaier",
-        "party": "CDU/CSU",
+        "party": "CDU",
         "difficulty": 1,
         "date": 2017,
         "link": "https://www.handelsblatt.com/politik/deutschland/altmaier-beim-handelsblatt-wirtschaftsclub-bis-2021-ist-deutschlands-verwaltung-komplett-digital/20319520.html"

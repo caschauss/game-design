@@ -1,7 +1,9 @@
+type Party = "SPD" | "CDU" | "FW" | "GRU" | "AfD" | "LNK" | "BSW" | "FDP" | "PLACEHOLDER" | "FINISHED";
+
 interface ExpressionData {
   expression: string;
   name: string;
-  party: string;
+  party: Party;
   difficulty: number;
   date: number;
   context?: string;
@@ -11,14 +13,12 @@ interface ExpressionData {
 let roundInformation: ExpressionData = {
   "expression": "placeholder expression",
   "name": "placeholder name",
-  "party": "placeholder party",
+  "party": "PLACEHOLDER",
   "difficulty": 0,
   "date": 1000,
   "context": "placeholder context",
   "link": "placeholder link"
 }
-
-type Party = "SPD" | "CDU" | "FW" | "GRU" | "AfD" | "LNK" | "BSW" | "FDP";
 
 let selectedColor = "black";
 let expressionArray: ExpressionData[] = [];
