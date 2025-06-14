@@ -36,3 +36,19 @@ export const getRoundInformation = async () => {
   });
   return res.json();
 };
+
+export const handleCallNewRound = async () => {
+  try {
+    await fetch("http://localhost:3000/newround", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message: "new round" }), // placeholder message
+    });
+
+    console.log("Successfully requested new round");
+  } catch (error) {
+    console.error("Error requesting new round: ", error);
+  }
+};
