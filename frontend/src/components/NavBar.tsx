@@ -52,6 +52,22 @@ export default function NavBar() {
     }
   };
 
+  const handleCallNewRound = async () => {
+    try {
+      await fetch("http://localhost:3000/newround", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ "message": "new round" }) // placeholder message
+      });
+
+      console.log("Successfully requested new round");
+    } catch (error) {
+      console.error("Error requesting new round: ", error);
+    }
+  };
+
   return (
     <nav className=" bg-zinc-900 absolute top-0 text-white p-2 flex gap-2 shadow-md w-full justify-center items-center">
       <span className="font-bold mr-4">Debug Menu</span>
@@ -67,11 +83,14 @@ export default function NavBar() {
       <button className="debugBtn" onClick={() => handleSetColor("black")}>
         Black
       </button>
-       <button className="debugBtn" onClick={handleGetScore}>
+      <button className="debugBtn" onClick={handleGetScore}>
         Score Info
       </button>
       <button className="debugBtn" onClick={handleRoundInfo}>
         Round Info
+      </button>
+      <button className="debugBtn" onClick={handleCallNewRound}>
+        New Round
       </button>
       <h1> = {output}</h1>
     </nav>
