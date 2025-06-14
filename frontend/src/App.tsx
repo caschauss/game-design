@@ -1,4 +1,6 @@
-import './App.css';
+// src/App.tsx
+import AppRoutes from "./routes";
+import NavBar from "./components/NavBar";
 
 function App() {
   const handleAPItest = async () => {
@@ -93,6 +95,10 @@ function App() {
 
       <button onClick={handleGetRoundInformation}>Log round information to console</button>
       <button onClick={handleCallNewRound}>Request new Round</button>
+    </div>
+    <div className="bg-zinc-900 h-screen w-screen text-white">
+      <NavBar />
+      <AppRoutes />
     </div>
   );
 }
