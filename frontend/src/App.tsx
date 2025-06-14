@@ -87,16 +87,6 @@ function App() {
 
   return (
     <>
-      <div>
-        <button onClick={handleAPItest}>Test API</button>
-
-        <button onClick={handleGetColor}>Log color to console</button>
-        <button onClick={() => handleSetColor("white")}>Set color to white</button>
-        <button onClick={() => handleSetColor("black")}>Set color to black</button>
-
-        <button onClick={handleGetRoundInformation}>Log round information to console</button>
-        <button onClick={handleCallNewRound}>Request new Round</button>
-      </div>
       <div className="bg-zinc-900 h-screen w-screen text-white">
         <NavBar />
         <AppRoutes />
