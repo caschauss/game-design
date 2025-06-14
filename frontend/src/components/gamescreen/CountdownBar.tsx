@@ -7,7 +7,7 @@ interface CountdownBarProps {
 }
 
 export default function CountdownBar({
-  duration = 5,
+  duration = 30,
   onComplete,
   powerups,
 }: CountdownBarProps) {
@@ -49,7 +49,7 @@ export default function CountdownBar({
   // Bar widths in %
   const normalBarWidthPercent = (normalTimeLeft / duration) * 100;
   const bonusBarWidthPercent = hasExtraTime
-    ? (bonusTimeLeft / bonusTime) * (bonusTime / totalDuration) * 100
+    ? (bonusTimeLeft / totalDuration) * 100
     : 0;
 
   return (
@@ -74,7 +74,7 @@ export default function CountdownBar({
 
         {hasExtraTime && (
           <div
-            className="h-full bg-blue-500 transition-all duration-1000 ease-linear w-96"
+            className="h-full bg-blue-500 transition-all duration-1000 ease-linear max-w-96"
             style={{ width: `${bonusBarWidthPercent}%` }}
           />
         )}
