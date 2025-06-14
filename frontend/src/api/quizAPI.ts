@@ -3,7 +3,7 @@
 const BASE_URL = "http://localhost:3000";
 
 export const testAPI = async () => {
-  const res = await fetch(`${BASE_URL}/test`, {
+  const res = await fetch(`${BASE_URL}/testapi`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message: "test" }),
