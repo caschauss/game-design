@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { controller_newRound } from './controller';
+import { model_getCurrentScore, model_setCurrentScore } from './model';
 type Party = "SPD" | "CDU" | "FW" | "GRU" | "AfD" | "LNK" | "BSW" | "FDP" | "PLACEHOLDER" | "FINISHED";
 
 interface ExpressionData {
@@ -51,6 +52,17 @@ export const callNewRound = () => {
         res.json({ "message": "ok" });
     };
 }
+
+// Reading current score
+export const getCurrentScore = () => {
+    return (req: Request, res: Response) => {
+        let datetime = new Date();
+        let score: number = model_getCurrentScore();
+        console.log("Received score request at " + datetime);
+        res.json({ "score": score });
+    };
+}
+
 
 // API test route
 export const testApi = () => {

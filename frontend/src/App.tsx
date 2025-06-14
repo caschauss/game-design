@@ -83,6 +83,23 @@ function App() {
     }
   };
 
+  const handleGetScore = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/getscore", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ "message": "get score" }) // placeholder message
+      });
+
+      const data = await response.json();
+      console.log("Received score: ", data.score);
+    } catch (error) {
+      console.error("Error getting score: ", error);
+    }
+  };
+
   return (
     <div>
       <button onClick={handleAPItest}>Test API</button>
@@ -92,6 +109,7 @@ function App() {
       <button onClick={() => handleSetColor("black")}>Set color to black</button>
 
       <button onClick={handleGetRoundInformation}>Log round information to console</button>
+      <button onClick={handleGetScore}>Log score to console</button>
       <button onClick={handleCallNewRound}>Request new Round</button>
     </div>
   );
