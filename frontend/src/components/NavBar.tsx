@@ -35,6 +35,23 @@ export default function NavBar() {
     setOutput(roundData.expression);
   };
 
+  const handleGetScore = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/getscore", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ "message": "get score" }) // placeholder message
+      });
+
+      const data = await response.json();
+      console.log("Received score: ", data.score);
+    } catch (error) {
+      console.error("Error getting score: ", error);
+    }
+  };
+
   return (
     <nav className=" bg-zinc-900 absolute top-0 text-white p-2 flex gap-2 shadow-md w-full justify-center items-center">
       <span className="font-bold mr-4">Debug Menu</span>
@@ -49,6 +66,9 @@ export default function NavBar() {
       </button>
       <button className="debugBtn" onClick={() => handleSetColor("black")}>
         Black
+      </button>
+       <button className="debugBtn" onClick={handleGetScore}>
+        Score Info
       </button>
       <button className="debugBtn" onClick={handleRoundInfo}>
         Round Info

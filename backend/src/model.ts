@@ -23,6 +23,7 @@ let roundInformation: ExpressionData = {
 let selectedColor = "black";
 let expressionArray: ExpressionData[] = [];
 let correctParty: Party = "SPD";
+let currentScore: number = 0;
 
 // Getting current round information
 export const model_getRoundInformation = () => {
@@ -62,4 +63,14 @@ export const model_getExpressionArray = () => {
 // Setting selected color
 export const model_setExpressionArray = (newExpressionArray: ExpressionData[]) => {
   expressionArray = newExpressionArray;
+}
+
+// Getting current score
+export const model_getCurrentScore = () => {
+  return currentScore;
+}
+
+// Setting current score
+export const model_setCurrentScore = (newCurrentScore: number) => {
+  currentScore = newCurrentScore;
 }
