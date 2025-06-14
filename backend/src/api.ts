@@ -38,7 +38,7 @@ export const getCurrentRoundInformation = (model_getRoundInformation: () => Expr
         let datetime = new Date();
         console.log("Received round information request at " + datetime);
         let info: ExpressionData = model_getRoundInformation();
-        info.party = "PLACEHOLDER"; // remove party information before sending
+        // info.party = "PLACEHOLDER"; // remove party information before sending
         res.json({ "roundInformation": info });
     };
 };
