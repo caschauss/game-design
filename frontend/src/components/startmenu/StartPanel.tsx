@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { powerUps } from "../../data/data";
+import { handleCallNewRound } from "../../api/quizAPI";
 
 export default function StartPanel() {
   const [playerName, setPlayerName] = useState("");
@@ -14,6 +15,8 @@ export default function StartPanel() {
     if (!playerName) {
       return;
     }
+    handleCallNewRound();
+
     navigate("/game", {
       state: {
         playerName,
@@ -120,12 +123,7 @@ export default function StartPanel() {
           {/* PowerUps nur anzeigen, wenn "2x auswählen" */}
           {answerOption === "2x Auswählen" ? (
             <div className="flex flex-col w-full max-w-96 ">
-              <p className="text-sm mx-auto mb-4">
-                {answerOption === "2x Auswählen"
-                  ? "Wähle 2 Power-Ups aus!"
-                  : "Zufällig ausgewählte Power-Ups"}
-              </p>
-              <div className="grid grid-cols-4 gap-4 w-full place-items-center">
+              <div className="grid grid-cols-4 mt-4 gap-4 w-full place-items-center">
                 {powerUps.map((powerUp) => {
                   const isSelected = selected.includes(powerUp.id);
                   const isDisabled =
@@ -162,6 +160,11 @@ export default function StartPanel() {
                   );
                 })}
               </div>
+              <p className="text-sm mx-auto mt-4">
+                {answerOption === "2x Auswählen"
+                  ? "Wähle 2 Power-Ups aus!"
+                  : "Zufällig ausgewählte Power-Ups"}
+              </p>
             </div>
           ) : null}
           <button

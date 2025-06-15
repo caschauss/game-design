@@ -19,7 +19,7 @@ export default function ResultScreen() {
   const handleBackToMain = () => {
     const resultData = {
       playerName: state.playerName,
-      score: state.score * 1.217 * 10000,
+      score: state.score,
       date: day,
       selectedPowerUps: selectedPowerUps.map((id) => {
         // Convert IDs (e.g. "doublePoints") to their 2-letter codes "2X" from powerUps data

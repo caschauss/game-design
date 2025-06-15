@@ -28,6 +28,7 @@ export default function GameScreen() {
   const [score, setScore] = useState(0);
   const [showFeedback, setShowFeedback] = useState(false);
   const [questionData, setQuestionData] = useState<QuestionData | null>(null);
+  const [currentRoundTimeLeft, setCurrentRoundTimeLeft] = useState(0); // <-- Neu: Speichert die verbleibende Zeit
 
   const { state } = useLocation() as {
     state: {
@@ -41,6 +42,8 @@ export default function GameScreen() {
   // Fetch new round data whenever currentRound changes
   useEffect(() => {
     async function fetchNewRound() {
+      // Set questionData to null to show "Lade Zitate..." during fetch
+      setQuestionData(null);
       const data = await getRoundInformation();
       const round = data.roundInformation;
 
@@ -50,6 +53,7 @@ export default function GameScreen() {
 
       if (!correctKey || !PARTIES[correctKey]) {
         console.warn("Unknown or missing party key:", correctKey);
+        // Optionally navigate to an error page or handle gracefully
         return;
       }
 
@@ -71,10 +75,17 @@ export default function GameScreen() {
         correct: correctKey,
         options,
       });
+      // Setzt die Zeit für die neue Runde zurück, wenn die Runde geladen ist
+      setCurrentRoundTimeLeft(30); // Oder whatever Ihre Standard-Duration ist
     }
 
     fetchNewRound();
   }, [currentRound]);
+
+  // Callback, um die Zeit von GameHeader/CountdownBar zu erhalten
+  const handleTimeUpdate = (timeLeft: number) => {
+    setCurrentRoundTimeLeft(timeLeft);
+  };
 
   const handleAnswer = async (short: string) => {
     if (selectedAnswer || showFeedback || !questionData) return;
@@ -85,25 +96,38 @@ export default function GameScreen() {
     const isCorrect = short === questionData.correct;
 
     if (isCorrect) {
-      setScore((prev) => prev + 1);
+      let basePoints = 1000; // Base points for a correct answer
+      const timeBonus = currentRoundTimeLeft * 100; // 100 points per remaining second
+
+      // Apply penalty/bonus based on power-ups
+      if (state.selectedPowerUps && state.selectedPowerUps.length > 0) {
+        basePoints *= 0.15;
+      } else {
+        basePoints *= 1.15;
+      }
+
+      // Calculate total new score
+      const newScore = basePoints + timeBonus;
+
+      setScore((prev) => prev + newScore); // Punkte zum bestehenden Score addieren
 
       setTimeout(async () => {
         await handleCallNewRound(); // Prepare backend for next round
         setSelectedAnswer(null);
         setShowFeedback(false);
         setCurrentRound((prev) => prev + 1); // Trigger next round fetch via useEffect
-      }, 1000);
+      }, 1000); // Wait 1 second before loading the next round
     } else {
       setTimeout(() => {
         navigate("/result", {
           state: {
             playerName: state.playerName,
             score,
-            total: score + 1,
+            total: currentRound + 1, // Total rounds played, not just score + 1
             selectedPowerUps: state.selectedPowerUps,
           },
         });
-      }, 1000);
+      }, 1000); // Wait 1 second before navigating to result
     }
   };
 
@@ -120,6 +144,7 @@ export default function GameScreen() {
         score={score}
         round={currentRound + 1}
         onTimeUp={() => handleAnswer("wrong")}
+        onTimeUpdate={handleTimeUpdate} // <-- Neu: Callback an GameHeader übergeben
       />
       <AnswerGrid
         options={questionData.options}

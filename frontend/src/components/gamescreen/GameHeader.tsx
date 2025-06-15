@@ -8,6 +8,7 @@ interface GameHeaderProps {
   score: number;
   round: number;
   onTimeUp: () => void;
+  onTimeUpdate: (timeLeft: number) => void;
 }
 
 type PowerUp = {
@@ -23,6 +24,7 @@ export default function GameHeader({
   score,
   round,
   onTimeUp,
+  onTimeUpdate,
 }: GameHeaderProps) {
   return (
     <div className="h-1/2 w-full flex flex-col justify-between">
@@ -78,6 +80,7 @@ export default function GameHeader({
         <CountdownBar
           duration={30}
           onComplete={onTimeUp}
+          onTimeUpdate={onTimeUpdate} // <-- Weiterleiten der onTimeUpdate Prop
           powerups={selectedPowerUps.join(",")}
         />
       </div>
