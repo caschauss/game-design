@@ -1,12 +1,11 @@
 import { Request, Response } from 'express';
 import { controller_newRound } from './controller';
 import { model_getCurrentScore } from './model';
-type Party = "SPD" | "CDU" | "FW" | "GRU" | "AfD" | "LNK" | "BSW" | "FDP" | "PLACEHOLDER" | "FINISHED";
 
 interface ExpressionData {
     expression: string;
     name: string;
-    party: Party;
+    party: string;
     difficulty: number;
     date: number;
     context?: string;

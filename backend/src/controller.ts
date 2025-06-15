@@ -1,12 +1,10 @@
 import expressionData from './expressions.json';
 import { model_getExpressionArray, model_setCorrectParty, model_setExpressionArray, model_setRoundInformation } from './model';
 
-type Party = "SPD" | "CDU" | "FW" | "GRU" | "AfD" | "LNK" | "BSW" | "FDP" | "PLACEHOLDER" | "FINISHED";
-
 interface ExpressionData {
     expression: string;
     name: string;
-    party: Party;
+    party: string;
     difficulty: number;
     date: number;
     context?: string;
@@ -20,7 +18,7 @@ export const controller_readExpressions = () => {
         const expression: ExpressionData = {
             expression: data.expression,
             name: data.name,
-            party: data.party as Party, // Type Assertion
+            party: data.party,
             difficulty: data.difficulty,
             date: data.date,
             context: data.context,
