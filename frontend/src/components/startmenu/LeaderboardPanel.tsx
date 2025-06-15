@@ -107,9 +107,6 @@ export default function LeaderboardPanel() {
   const newResult = location.state as {
     playerName?: string;
     score?: number;
-    // For date, it's usually best to get the current date on the result screen,
-    // or pass it from the game screen when the game ends.
-    // If date is not explicitly passed from GameScreen, we generate it here.
     date?: string;
     selectedPowerUps?: string[];
   };
@@ -185,8 +182,9 @@ export default function LeaderboardPanel() {
   return (
     <div className="mt-8 flex flex-col gap-6 h-full w-full px-8 text-black">
       <h2 className="subheader text-center text-3xl font-bold">Leaderboards</h2>
-      <div className="overflow-x-auto">
-        <table className="w-full rounded-lg shadow-md">
+      {/* Adjusted div for table responsiveness */}
+      <div className="overflow-x-auto h-full 2xl:h-full sm:h-5/6 lg:h-[50%]  lg:w-[100%] lg:mx-auto">
+        <table className="w-full rounded-lg shadow-md ">
           <thead className="bg-zinc-900 text-left text-white">
             <tr>
               <th className="p-3">Platz</th>
@@ -208,10 +206,10 @@ export default function LeaderboardPanel() {
               return (
                 <tr
                   key={`${entry.rank}-${entry.name}-${entry.score}`} // Added score to key for better uniqueness
-                  className={`${isHighlighted ? "bg-green-200/30 border border-green-400" : "even:bg-zinc-900/15"}`}
+                  className={`${isHighlighted ? " bg-green-200/30 border border-green-400" : "even:bg-zinc-900/15"}`}
                 >
                   <td className="p-3 font-semibold">{entry.rank}</td>
-                  <td className="p-3">{entry.name}</td>
+                  <td className="p-3 truncate">{entry.name}</td>
                   <td className="p-3">{entry.score}</td>
                   <td className="p-3">{entry.date}</td>
                   <td className="p-3">
@@ -234,8 +232,6 @@ export default function LeaderboardPanel() {
             })}
             {newEntry && ( // Only render this row if newEntry is not null (i.e., not in top 10)
               <tr className="bg-orange-200/30 border border-orange-400">
-                {" "}
-                {/* Changed highlight color for clarity */}
                 <td className="p-3 font-semibold">–</td>
                 <td className="p-3">{newEntry.name}</td>
                 <td className="p-3">{newEntry.score}</td>

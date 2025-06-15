@@ -46,8 +46,8 @@ export default function StartPanel() {
   }
 
   return (
-    <div className="mt-8 flex flex-col gap-6">
-      <h2 className="subheader">Spieleinstellungen</h2>
+    <div className="mt-8 flex flex-col gap-6 w-full">
+      <h2 className="subheader mx-auto">Spieleinstellungen</h2>
 
       <div className="flex flex-col items-center gap-4">
         <form
@@ -69,7 +69,7 @@ export default function StartPanel() {
               Schwierigkeitsstufe{" "}
             </p>
 
-            <div className="mb-4 flex flex-col justify-center items-start w-full accent-black">
+            <div className="mb-4 flex flex-col justify-center items-start w-full accent-black max-w-72 mx-auto">
               <input
                 type="range"
                 min={1}
@@ -77,7 +77,7 @@ export default function StartPanel() {
                 step={1}
                 value={difficulty}
                 onChange={(e) => setDifficulty(Number(e.target.value))}
-                className="w-full accent-black"
+                className="w-full accent-black "
               />
               <div className="w-full flex justify-between text-sm text-zinc-900 px-1">
                 <span>Einfach</span>

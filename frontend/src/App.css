@@ -9,13 +9,13 @@
 }
 
 .title {
-    @apply text-6xl font-black pt-16;
+    @apply 2xl:text-6xl sm:text-4xl font-black pt-16;
 }
 
 .subheader {
-    @apply text-5xl font-semibold mb-8;
+    @apply 2xl:text-5xl sm:text-3xl font-semibold mb-8;
 }
 
 .subsubheader {
-    @apply text-xl font-semibold mb-2;
+    @apply 2xl:text-xl sm:text-base font-semibold mb-2;
 }

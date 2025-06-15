@@ -55,8 +55,8 @@ export default function StartMenu() {
           </button>
         </div>
       </div>
-      <div className="bg-linear-to-r from-amber-200/70 to-amber-200/75 w-full rounded-4xl">
-        <div className="p-14  w-full h-full flex flex-col  items-center text-black ">
+      <div className="bg-linear-to-r from-amber-200/70 to-amber-200/75 w-full rounded-l-4xl">
+        <div className="p-26  w-full h-full flex flex-col  items-center text-black ">
           <div className="max-w-4xl  text-black w-full h-full overflow-y-auto flex flex-col  items-center">
             {renderPanel()}
           </div>
