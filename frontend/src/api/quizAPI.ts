@@ -47,7 +47,7 @@ export const handleCallNewRound = async () => {
       body: JSON.stringify({ message: "new round" }), // placeholder message
     });
 
-    console.log("Successfully requested new round");
+    console.log("Successfully requested new round2");
   } catch (error) {
     console.error("Error requesting new round: ", error);
   }

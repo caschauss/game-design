@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import RulesPanel from "../components/startmenu/RulesPanel";
 import SettingsPanel from "../components/startmenu/SettingsPanel";
 import LeaderboardPanel from "../components/startmenu/LeaderboardPanel";

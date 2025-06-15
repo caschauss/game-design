@@ -19,6 +19,7 @@ export default function SettingsPanel() {
             <span>{redGreen ? "An" : "Aus"}</span>
             <input
               type="checkbox"
+              disabled={true}
               checked={redGreen}
               onChange={() => setRedGreen(!redGreen)}
             />
@@ -30,6 +31,7 @@ export default function SettingsPanel() {
           <label className="flex gap-2">
             <span>{blueYellow ? "An" : "Aus"}</span>
             <input
+              disabled={true}
               type="checkbox"
               checked={blueYellow}
               onChange={() => setBlueYellow(!blueYellow)}
@@ -44,6 +46,7 @@ export default function SettingsPanel() {
         <div className="mb-4  flex flex-col justify-center items-start w-full">
           <p className="mb-1">Lautstärke</p>
           <input
+            disabled={true}
             type="range"
             min={0}
             max={100}
@@ -59,6 +62,7 @@ export default function SettingsPanel() {
           <label className="flex items-center gap-2">
             <span>{soundEffects ? "An" : "Aus"}</span>
             <input
+              disabled={true}
               type="checkbox"
               checked={soundEffects}
               onChange={() => setSoundEffects(!soundEffects)}
