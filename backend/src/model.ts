@@ -1,9 +1,7 @@
-type Party = "SPD" | "CDU" | "FW" | "GRU" | "AfD" | "LNK" | "BSW" | "FDP" | "PLACEHOLDER" | "FINISHED";
-
 interface ExpressionData {
   expression: string;
   name: string;
-  party: Party;
+  party: string;
   difficulty: number;
   date: number;
   context?: string;
@@ -22,7 +20,7 @@ let roundInformation: ExpressionData = {
 
 let selectedColor = "black";
 let expressionArray: ExpressionData[] = [];
-let correctParty: Party = "SPD";
+let correctParty: string = "SPD";
 let currentScore: number = 0;
 
 // Getting current round information
@@ -51,7 +49,7 @@ export const model_getCorrectParty = () => {
 }
 
 // Setting correct party
-export const model_setCorrectParty = (newCorrectParty: Party) => {
+export const model_setCorrectParty = (newCorrectParty: string) => {
   correctParty = newCorrectParty;
 }
 
