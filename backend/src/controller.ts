@@ -40,7 +40,9 @@ export const controller_newRound = () => {
     let expressionArray: ExpressionData[] = model_getExpressionArray();
 
     if (expressionArray.length > 0) {
-        let lastElement = expressionArray.pop();
+        let lastElement: ExpressionData = expressionArray[expressionArray.length - 1];
+
+
         if (lastElement === undefined) {
             // Fallback Expression in case Array is empty (game finished)
             model_setRoundInformation({
@@ -54,8 +56,15 @@ export const controller_newRound = () => {
             });
             model_setCorrectParty("FINISHED");
         } else {
+            let newExpressionArray = new Array(Math.max(expressionArray.length - 1, 0)); // create Array with size at least 0 or larger
+
+            for (let index = 0; index < newExpressionArray.length; index++) {
+                newExpressionArray[index] = expressionArray[index];
+            }
+
             model_setRoundInformation(lastElement);
             model_setCorrectParty(lastElement.party);
+            model_setExpressionArray(newExpressionArray);
         }
     }
 }
