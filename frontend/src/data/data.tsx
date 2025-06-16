@@ -14,7 +14,7 @@ export const PARTIES = {
     img: "/logos/fdp.png",
     color: "bg-yellow-400",
   },
-  AFD: {
+  AfD: {
     full: "Alternative für Deutschland",
     img: "/logos/afd.png",
     color: "bg-red-700",
