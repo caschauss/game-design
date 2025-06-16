@@ -27,7 +27,7 @@ export const PARTIES = {
   },
   BSW: {
     full: "Bündnis Sarah Wagenknecht",
-    img: "/logos/sed.png",
+    img: "/logos/bsw.png",
     color: "bg-indigo-700",
   },
 } as const;
