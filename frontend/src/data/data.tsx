@@ -14,15 +14,15 @@ export const PARTIES = {
     img: "/logos/fdp.png",
     color: "bg-yellow-400",
   },
-  SED: {
-    full: "Sozialistische Einheitspartei Deutschlands",
-    img: "/logos/sed.png",
+  AFD: {
+    full: "Alternative für Deutschland",
+    img: "/logos/afd.png",
     color: "bg-red-700",
   },
   FW: { full: "Freie Wähler", img: "/logos/fw.png", color: "bg-orange-500" },
   GRÜNE: {
     full: "Bündnis 90 die Grünen",
-    img: "/logos/sed.png",
+    img: "/logos/gruene.png",
     color: "bg-green-700",
   },
   BSW: {
