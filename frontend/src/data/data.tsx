@@ -1,12 +1,12 @@
 export const PARTIES = {
   SPD: {
     full: "Sozialdemokratische Partei Deutschlands",
-    img: "/logos/spd.png",
+    img: "/logos/spd.jpg",
     color: "bg-red-600",
   },
   CDU: {
     full: "Christlich Demokratische Union",
-    img: "/logos/cdu.png",
+    img: "/logos/cdu.jpg",
     color: "bg-gray-800",
   },
   FDP: {
@@ -27,7 +27,7 @@ export const PARTIES = {
   },
   BSW: {
     full: "Bündnis Sarah Wagenknecht",
-    img: "/logos/bsw.png",
+    img: "/logos/bsw.jpg",
     color: "bg-indigo-700",
   },
 } as const;
@@ -47,7 +47,7 @@ export const powerUps = [
   },
   {
     id: "showContext",
-    color: "bg-yellow-500",
+    color: "bg-indigo-500",
     label: "Kontext",
     short: "KO", // Kontext
   },

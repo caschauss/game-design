@@ -36,12 +36,14 @@ export default function AnswerGrid({
 
         const base =
           "w-full h-full text-white font-bold flex flex-col justify-center items-center text-center rounded-sm";
-        const bgColor =
-          showFeedback && isSelected
-            ? isCorrect
-              ? "bg-green-600"
-              : "bg-red-600"
-            : "bg-zinc-800 hover:bg-zinc-700";
+
+        const bgColor = showFeedback
+          ? isCorrect
+            ? "bg-green-600"
+            : isSelected
+              ? "bg-red-600"
+              : "bg-zinc-800"
+          : "bg-zinc-800 hover:bg-zinc-700";
 
         return (
           <button
@@ -62,7 +64,7 @@ export default function AnswerGrid({
               <img
                 src={option.img}
                 alt={option.short}
-                className="size-28 mb-2 bg-white rounded-lg text-black p-4 items-center"
+                className="w-fit h-full mb-2 rounded-lg text-black items-center"
               />
             </div>
           </button>
