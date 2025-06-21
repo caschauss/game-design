@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import ScoreRoundDisplay from "./gameheadercomponents/ScoreRoundDisplay";
 import QuestionDisplay from "./gameheadercomponents/QuestionDislpay";
 import PowerUpsSelector from "./gameheadercomponents/PowerUpsSelector";
@@ -7,6 +6,9 @@ import CountdownBar from "./CountdownBar";
 interface GameHeaderProps {
   playerName: string;
   selectedPowerUps: string[];
+  usedPowerUps: string[];
+  chosenPowerUp: string | null;
+  onChoosePowerUp: (id: string) => void;
   question: string;
   author: string;
   context: string;
@@ -19,37 +21,28 @@ interface GameHeaderProps {
   onTimeUpdate: (timeLeft: number) => void;
 }
 
-export default function GameHeader(props: GameHeaderProps) {
-  const {
-    selectedPowerUps,
-    question,
-    author,
-    context,
-    date,
-    source,
-    score,
-    round,
-    lives,
-    onTimeUp,
-    onTimeUpdate,
-  } = props;
-
-  const [chosenPowerUp, setChosenPowerUp] = useState<string | null>(null);
-  const [usedPowerUps, setUsedPowerUps] = useState<string[]>([]);
-
+export default function GameHeader({
+  selectedPowerUps,
+  usedPowerUps,
+  chosenPowerUp,
+  onChoosePowerUp,
+  question,
+  author,
+  context,
+  date,
+  source,
+  score,
+  round,
+  lives,
+  onTimeUp,
+  onTimeUpdate,
+}: GameHeaderProps) {
   const showAuthor = chosenPowerUp === "showPolitician";
   const showDate = chosenPowerUp === "showYear";
   const showContext = chosenPowerUp === "showContext";
   const showDoublePoints = chosenPowerUp === "doublePoints";
 
-  useEffect(() => {
-    setChosenPowerUp(null);
-  }, [round]);
-
-  function handleChoosePowerUp(id: string) {
-    setChosenPowerUp(id);
-    setUsedPowerUps((prev) => [...prev, id]);
-  }
+  // Kein lokalen State für chosenPowerUp oder usedPowerUps
 
   return (
     <div className="h-1/2 w-full flex flex-col justify-between">
@@ -58,7 +51,7 @@ export default function GameHeader(props: GameHeaderProps) {
           selectedPowerUps={selectedPowerUps}
           chosenPowerUp={chosenPowerUp}
           usedPowerUps={usedPowerUps}
-          onChoosePowerUp={handleChoosePowerUp}
+          onChoosePowerUp={onChoosePowerUp} // direkt von Parent kommen lassen
         />
         <QuestionDisplay
           question={question}
@@ -83,7 +76,7 @@ export default function GameHeader(props: GameHeaderProps) {
           duration={30}
           onComplete={onTimeUp}
           onTimeUpdate={onTimeUpdate}
-          powerups={chosenPowerUp ? chosenPowerUp : ""}
+          powerups={chosenPowerUp ?? ""}
         />
       </div>
     </div>

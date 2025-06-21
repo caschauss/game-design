@@ -33,7 +33,7 @@ export default function CountdownBar({
     }
     setFreezeTimeLeft(FREEZE_DURATION);
     setFreezeActive(false);
-  }, [duration, powerups, isTimeFreezeActive]);
+  }, [duration, isTimeFreezeActive]);
 
   // Main timer countdown
   useEffect(() => {

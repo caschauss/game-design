@@ -2,12 +2,15 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { powerUps } from "../../data/data";
 import { handleCallNewRound } from "../../api/quizAPI";
+import PowerupButton from "../audio/PowerupButton";
+import { useInputSoundEffect } from "../../hooks/useInputSoundEffect";
 
 export default function StartPanel() {
   const [playerName, setPlayerName] = useState("");
   const [difficulty, setDifficulty] = useState(1);
   const [answerOption, setAnswerOption] = useState("2x auswählen");
   const [selected, setSelected] = useState<string[]>([]);
+  const playInputSound = useInputSoundEffect("/audio/sounds/keyboard.mp3");
   const navigate = useNavigate();
 
   const handleStart = (e: React.FormEvent) => {
@@ -59,7 +62,10 @@ export default function StartPanel() {
             type="text"
             placeholder="Kim Meier"
             value={playerName}
-            onChange={(e) => setPlayerName(e.target.value)}
+            onChange={(e) => {
+              setPlayerName(e.target.value);
+              playInputSound();
+            }}
             className="mb-4 border-2 border-zinc-900 w-full p-2 focus:outline-2 focus:outline-white rounded-md max-w-72 mx-auto"
           />
 
@@ -122,7 +128,7 @@ export default function StartPanel() {
 
           {/* PowerUps nur anzeigen, wenn "2x auswählen" */}
           {answerOption === "2x Auswählen" ? (
-            <div className="flex flex-col w-full max-w-96 ">
+            <div className="flex flex-col w-full max-w-96">
               <div className="grid grid-cols-4 mt-4 gap-4 w-full place-items-center">
                 {powerUps.map((powerUp) => {
                   const isSelected = selected.includes(powerUp.id);
@@ -136,23 +142,23 @@ export default function StartPanel() {
                       key={powerUp.id}
                       className="flex flex-col items-center gap-1"
                     >
-                      <button
+                      <PowerupButton
                         type="button"
                         onClick={() =>
                           answerOption === "2x Auswählen" &&
                           !isDisabled &&
                           toggleSelection(powerUp.id)
                         }
-                        disabled={answerOption !== "2x Auswählen" || isDisabled}
+                        disabled={isDisabled}
+                        isActive={isSelected}
                         className={`aspect-square w-10 rounded-md flex items-center justify-center font-bold text-white
                           ${powerUp.color}
-                          ${isSelected ? "ring-4 ring-white" : "opacity-80 hover:opacity-100"}
-                          ${isDisabled ? "opacity-25 cursor-not-allowed" : "cursor-pointer"}
+                          ${isDisabled ? "opacity-25 cursor-not-allowed" : "opacity-80 hover:opacity-100"}
                         `}
                         title={powerUp.label}
                       >
                         {powerUp.short}
-                      </button>
+                      </PowerupButton>
                       <span className="text-sm text-center">
                         {powerUp.label}
                       </span>
@@ -160,13 +166,10 @@ export default function StartPanel() {
                   );
                 })}
               </div>
-              <p className="text-sm mx-auto mt-4">
-                {answerOption === "2x Auswählen"
-                  ? "Wähle 2 Power-Ups aus!"
-                  : "Zufällig ausgewählte Power-Ups"}
-              </p>
+              <p className="text-sm mx-auto mt-4">Wähle 2 Power-Ups aus!</p>
             </div>
           ) : null}
+
           <button
             type="submit"
             className=" cursor-pointer italic mt-4 p-2 bg-zinc-900 text-white rounded-lg w-48 text-xl uppercase font-semibold"

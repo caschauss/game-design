@@ -1,4 +1,5 @@
 import { powerUps } from "../../../data/data";
+import ActivatePowerup from "../../audio/ActivatePowerup";
 
 interface PowerUpsSelectorProps {
   selectedPowerUps: string[];
@@ -24,11 +25,10 @@ export default function PowerUpsSelector({
 
             const isSelected = chosenPowerUp === id;
             const isDisabled =
-              (chosenPowerUp !== null && !isSelected) ||
-              usedPowerUps.includes(id);
+              chosenPowerUp !== null || usedPowerUps.includes(id);
 
             return (
-              <button
+              <ActivatePowerup
                 key={id}
                 onClick={() => {
                   if (!chosenPowerUp && !usedPowerUps.includes(id)) {
@@ -50,7 +50,7 @@ export default function PowerUpsSelector({
                   {p.short}
                 </div>
                 <span className="text-sm text-center">{p.label}</span>
-              </button>
+              </ActivatePowerup>
             );
           })
         ) : (

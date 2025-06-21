@@ -1,15 +1,23 @@
-// src/App.tsx
+import { BrowserRouter as Router } from "react-router-dom";
 import AppRoutes from "./routes";
 import NavBar from "./components/NavBar";
+import BackgroundMusic from "./components/audio/BackgroundMusic";
+import { SoundSettingsProvider } from "./components/audio/SoundSettings";
 
 function App() {
   return (
     <>
-      <div className="bg-zinc-900 h-screen w-screen text-white">
-        <NavBar />
-        <AppRoutes />
-      </div>
-    </>);
+      <SoundSettingsProvider>
+        <Router>
+          <BackgroundMusic />
+          <div className="bg-zinc-900 h-screen w-screen text-white">
+            <NavBar />
+            <AppRoutes />
+          </div>
+        </Router>
+      </SoundSettingsProvider>
+    </>
+  );
 }
 
 export default App;

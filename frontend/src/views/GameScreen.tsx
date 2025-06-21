@@ -35,14 +35,30 @@ export default function GameScreen() {
   const [questionData, setQuestionData] = useState<QuestionData | null>(null);
   const [currentRoundTimeLeft, setCurrentRoundTimeLeft] = useState(0); // <-- Neu: Speichert die verbleibende Zeit
   const [lives, setLives] = useState(3);
-
   const { state } = useLocation() as {
     state: {
       playerName: string;
       difficulty: string;
       answerOption: string;
       selectedPowerUps: string[];
+      usedPowerUps: string[];
     };
+  };
+  const [selectedPowerUps, setSelectedPowerUps] = useState<string[]>(
+    state.selectedPowerUps || [],
+  );
+  const [usedPowerUps, setUsedPowerUps] = useState<string[]>(
+    state.usedPowerUps || [],
+  );
+  const [chosenPowerUp, setChosenPowerUp] = useState<string | null>(null);
+
+  // Funktion zur Aktivierung eines PowerUps
+  const activatePowerUp = (id: string) => {
+    if (!selectedPowerUps.includes(id)) return;
+
+    setSelectedPowerUps((prev) => prev.filter((p) => p !== id));
+    setUsedPowerUps((prev) => [...prev, id]);
+    setChosenPowerUp(id);
   };
 
   // Fetch new round data whenever currentRound changes
@@ -89,6 +105,7 @@ export default function GameScreen() {
       // Setzt die Zeit für die neue Runde zurück, wenn die Runde geladen ist
       setCurrentRoundTimeLeft(30); // Oder whatever Ihre Standard-Duration ist
     }
+    setChosenPowerUp(null);
 
     fetchNewRound();
   }, [currentRound]);
@@ -167,7 +184,10 @@ export default function GameScreen() {
     <div className="pt-12 h-full text-white">
       <GameHeader
         playerName={state.playerName}
-        selectedPowerUps={state.selectedPowerUps}
+        selectedPowerUps={selectedPowerUps}
+        usedPowerUps={usedPowerUps}
+        chosenPowerUp={chosenPowerUp}
+        onChoosePowerUp={activatePowerUp}
         question={questionData.quote}
         author={questionData.name}
         context={questionData.context}
