@@ -166,13 +166,12 @@ export default function StartPanel() {
                   );
                 })}
               </div>
-              <p className="text-sm mx-auto mt-4">Wähle 2 Power-Ups aus!</p>
             </div>
           ) : null}
 
           <button
             type="submit"
-            className=" cursor-pointer italic mt-4 p-2 bg-zinc-900 text-white rounded-lg w-48 text-xl uppercase font-semibold"
+            className=" cursor-pointer italic mt-8 p-2 bg-zinc-900 text-white rounded-lg w-48 text-xl uppercase font-semibold"
           >
             {" "}
             Los Gehts!

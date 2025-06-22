@@ -168,7 +168,7 @@ export default function GameScreen() {
             setSelectedAnswer(null);
             setShowFeedback(false);
             setCurrentRound((prev) => prev + 1);
-          }, 1000);
+          }, 3000);
         }
 
         return newLives;

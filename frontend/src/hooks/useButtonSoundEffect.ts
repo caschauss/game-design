@@ -5,6 +5,8 @@ export function useButtonSoundEffect(audioUrl: string) {
   const { soundEffectsEnabled, volume } = useSoundSettings();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  const baseVolumeMultiplier = 1.5;
+
   useEffect(() => {
     audioRef.current = new Audio(audioUrl);
   }, [audioUrl]);
@@ -13,7 +15,8 @@ export function useButtonSoundEffect(audioUrl: string) {
     if (!soundEffectsEnabled || !audioRef.current) return;
 
     const audio = audioRef.current;
-    audio.volume = volume / 100;
+    const adjustedVolume = Math.min(1.0, (volume / 100) * baseVolumeMultiplier);
+    audio.volume = adjustedVolume;
     audio.currentTime = 0;
     audio.play().catch(() => {
       // Handle autoplay prevention silently
