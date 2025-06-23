@@ -154,5 +154,21 @@
         "difficulty": 1,
         "date": 2018,
         "link": "https://www.derstandard.de/story/2000071318047/koelner-polizei-erstattete-anzeige-gegen-afd-politikerin-von-storch"
+    },
+    {
+        "expression": "Man muss genau hinschauen, ob es noch ein Computerspiel ist, eine Simulation, oder eine verdeckte Planung für einen Anschlag",
+        "name": "Horst Seehofer",
+        "party": "CDU",
+        "difficulty": 2,
+        "date": 2019,
+        "link": "https://www.deutschlandfunk.de/massnahmen-gegen-rechtsextremismus-cdu-fordert-rueckkehr-100.html"
+    },
+    {
+        "expression": "Da wird man sprachlos. In Österreich regieren die Grünen. DIE GRÜNEN",
+        "name": "Horst Seehofer",
+        "party": "CDU",
+        "difficulty": 1,
+        "date": 1000,
+        "link": "https://www.youtube.com/watch?v=M-ZtGxQIly4"
     }
 ]
