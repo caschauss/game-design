@@ -17,6 +17,11 @@ interface PartyOption {
 interface QuestionData {
   quote: string;
   correct: string;
+  context: string;
+  date: number;
+  difficulty: number;
+  source: string;
+  name: string;
   options: PartyOption[];
 }
 
@@ -29,6 +34,8 @@ export default function GameScreen() {
   const [showFeedback, setShowFeedback] = useState(false);
   const [questionData, setQuestionData] = useState<QuestionData | null>(null);
   const [currentRoundTimeLeft, setCurrentRoundTimeLeft] = useState(0); // <-- Neu: Speichert die verbleibende Zeit
+  const [lives, setLives] = useState(3);
+  const [hasAnswered, setHasAnswered] = useState(false);
 
   const { state } = useLocation() as {
     state: {
@@ -36,7 +43,24 @@ export default function GameScreen() {
       difficulty: string;
       answerOption: string;
       selectedPowerUps: string[];
+      usedPowerUps: string[];
     };
+  };
+  const [selectedPowerUps, setSelectedPowerUps] = useState<string[]>(
+    state.selectedPowerUps || [],
+  );
+  const [usedPowerUps, setUsedPowerUps] = useState<string[]>(
+    state.usedPowerUps || [],
+  );
+  const [chosenPowerUp, setChosenPowerUp] = useState<string | null>(null);
+
+  // Funktion zur Aktivierung eines PowerUps
+  const activatePowerUp = (id: string) => {
+    if (!selectedPowerUps.includes(id)) return;
+
+    setSelectedPowerUps((prev) => prev.filter((p) => p !== id));
+    setUsedPowerUps((prev) => [...prev, id]);
+    setChosenPowerUp(id);
   };
 
   // Fetch new round data whenever currentRound changes
@@ -73,13 +97,19 @@ export default function GameScreen() {
       setQuestionData({
         quote: round.expression,
         correct: correctKey,
+        context: round.context,
+        date: round.date,
+        difficulty: round.difficulty,
+        source: round.link,
+        name: round.name,
         options,
       });
-      // Setzt die Zeit für die neue Runde zurück, wenn die Runde geladen ist
-      setCurrentRoundTimeLeft(30); // Oder whatever Ihre Standard-Duration ist
+      setCurrentRoundTimeLeft(30);
     }
+    setChosenPowerUp(null);
 
     fetchNewRound();
+    setHasAnswered(false);
   }, [currentRound]);
 
   // Callback, um die Zeit von GameHeader/CountdownBar zu erhalten
@@ -88,46 +118,69 @@ export default function GameScreen() {
   };
 
   const handleAnswer = async (short: string) => {
-    if (selectedAnswer || showFeedback || !questionData) return;
+    if (hasAnswered || selectedAnswer || showFeedback || !questionData) return;
 
+    setHasAnswered(true);
     setSelectedAnswer(short);
     setShowFeedback(true);
 
     const isCorrect = short === questionData.correct;
 
     if (isCorrect) {
-      let basePoints = 1000; // Base points for a correct answer
-      const timeBonus = currentRoundTimeLeft * 100; // 100 points per remaining second
+      let basePoints = 1000;
+      const timeBonus = currentRoundTimeLeft * 100;
 
-      // Apply penalty/bonus based on power-ups
       if (state.selectedPowerUps && state.selectedPowerUps.length > 0) {
         basePoints *= 0.15;
       } else {
         basePoints *= 1.15;
       }
 
-      // Calculate total new score
       const newScore = basePoints + timeBonus;
 
-      setScore((prev) => prev + newScore); // Punkte zum bestehenden Score addieren
+      setScore((prev) => prev + newScore);
 
       setTimeout(async () => {
-        await handleCallNewRound(); // Prepare backend for next round
+        const nextRound = currentRound + 1;
+
+        if (nextRound % 5 === 0 && lives < 3) {
+          setLives((prev) => Math.min(prev + 1, 3));
+        }
+
+        await handleCallNewRound();
         setSelectedAnswer(null);
         setShowFeedback(false);
-        setCurrentRound((prev) => prev + 1); // Trigger next round fetch via useEffect
-      }, 1000); // Wait 1 second before loading the next round
+        setCurrentRound(nextRound);
+      }, 1000);
     } else {
-      setTimeout(() => {
-        navigate("/result", {
-          state: {
-            playerName: state.playerName,
-            score,
-            total: currentRound + 1, // Total rounds played, not just score + 1
-            selectedPowerUps: state.selectedPowerUps,
-          },
-        });
-      }, 1000); // Wait 1 second before navigating to result
+      // Wrong answer: decrease lives by 1
+      setLives((prevLives) => {
+        const newLives = prevLives - 1;
+
+        if (newLives <= 0) {
+          // If no lives left, go to result screen after delay
+          setTimeout(() => {
+            navigate("/result", {
+              state: {
+                playerName: state.playerName,
+                score,
+                total: currentRound + 1,
+                selectedPowerUps: state.selectedPowerUps,
+              },
+            });
+          }, 5000);
+        } else {
+          // If still have lives left, just move on to next round
+          setTimeout(async () => {
+            await handleCallNewRound();
+            setSelectedAnswer(null);
+            setShowFeedback(false);
+            setCurrentRound((prev) => prev + 1);
+          }, 3000);
+        }
+
+        return newLives;
+      });
     }
   };
 
@@ -139,13 +192,22 @@ export default function GameScreen() {
     <div className="pt-12 h-full text-white">
       <GameHeader
         playerName={state.playerName}
-        selectedPowerUps={state.selectedPowerUps}
+        selectedPowerUps={selectedPowerUps}
+        usedPowerUps={usedPowerUps}
+        chosenPowerUp={chosenPowerUp}
+        onChoosePowerUp={activatePowerUp}
         question={questionData.quote}
+        author={questionData.name}
+        context={questionData.context}
+        date={questionData.date}
+        source={questionData.source}
         score={score}
         round={currentRound + 1}
+        lives={lives}
         onTimeUp={() => handleAnswer("wrong")}
         onTimeUpdate={handleTimeUpdate} // <-- Neu: Callback an GameHeader übergeben
       />
+
       <AnswerGrid
         options={questionData.options}
         correctAnswer={questionData.correct}

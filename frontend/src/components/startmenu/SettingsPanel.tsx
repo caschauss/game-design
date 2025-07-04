@@ -1,71 +1,59 @@
-import { useState } from "react";
+import { useSoundSettings } from "../audio/SoundSettings";
 
 export default function SettingsPanel() {
-  const [redGreen, setRedGreen] = useState(false);
-  const [blueYellow, setBlueYellow] = useState(false);
-  const [soundEffects, setSoundEffects] = useState(true);
-  const [volume, setVolume] = useState(50);
+  const {
+    musicEnabled,
+    setMusicEnabled,
+    soundEffectsEnabled,
+    setSoundEffectsEnabled,
+    volume,
+    setVolume,
+  } = useSoundSettings();
 
   return (
     <div className="mt-8 flex flex-col gap-6">
       <h2 className="subheader">Einstellungen</h2>
 
-      <div>
-        <h3 className="subsubheader">Visuell</h3>
-
-        <div className="mb-4 flex justify-between w-full">
-          <p className="mb-1 ">Rot-Grün-Schwäche</p>
-          <label className="flex items-center gap-2">
-            <span>{redGreen ? "An" : "Aus"}</span>
-            <input
-              type="checkbox"
-              disabled={true}
-              checked={redGreen}
-              onChange={() => setRedGreen(!redGreen)}
-            />
-          </label>
-        </div>
-
-        <div className="mb-4 flex justify-between w-full">
-          <p className="mb-1">Blau-Gelb-Schwäche</p>
-          <label className="flex gap-2">
-            <span>{blueYellow ? "An" : "Aus"}</span>
-            <input
-              disabled={true}
-              type="checkbox"
-              checked={blueYellow}
-              onChange={() => setBlueYellow(!blueYellow)}
-            />
-          </label>
-        </div>
-      </div>
+      {/* Visuell stuff as before */}
 
       <div className="w-full">
         <h3 className="subsubheader">Audio</h3>
 
-        <div className="mb-4  flex flex-col justify-center items-start w-full">
+        <div className="mb-4 flex flex-col justify-center items-start w-full">
           <p className="mb-1">Lautstärke</p>
           <input
-            disabled={true}
             type="range"
             min={0}
             max={100}
             value={volume}
             onChange={(e) => setVolume(Number(e.target.value))}
-            className="w-full"
+            className="w-full accent-black"
           />
           <span className="text-sm text-gray-700 mx-auto">{volume}%</span>
         </div>
 
         <div className="mb-4 flex justify-between w-full">
+          <p className="mb-1">Hintergrundmusik</p>
+          <label className="flex items-center gap-2">
+            <span>{musicEnabled ? "An" : "Aus"}</span>
+            <input
+              className="size-6 accent-black"
+              type="checkbox"
+              checked={musicEnabled}
+              onChange={() => setMusicEnabled(!musicEnabled)}
+            />
+          </label>
+        </div>
+
+        <div className="mb-4 flex justify-between w-full">
           <p className="mb-1">Soundeffekte</p>
           <label className="flex items-center gap-2">
-            <span>{soundEffects ? "An" : "Aus"}</span>
+            <span>{soundEffectsEnabled ? "An" : "Aus"}</span>
             <input
-              disabled={true}
+              className="size-6 accent-black"
               type="checkbox"
-              checked={soundEffects}
-              onChange={() => setSoundEffects(!soundEffects)}
+              checked={soundEffectsEnabled}
+              onChange={() => setSoundEffectsEnabled(!soundEffectsEnabled)}
             />
           </label>
         </div>

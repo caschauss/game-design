@@ -35,13 +35,13 @@ export default function ResultScreen() {
     <div className="w-full flex flex-col items-center justify-center text-white px-8 py-16 gap-16">
       <h1 className="title">Runde vorbei! 🏁</h1>
 
-      <div className="bg-zinc-800 rounded-xl p-8 w-full max-w-2xl shadow-lg my-auto grid grid-cols-2">
+      <div className="bg-zinc-800 rounded-xl p-8 w-full max-w-6xl shadow-lg my-auto grid grid-cols-2">
         <div className="mb-6">
           <h2 className="subsubheader">Spielername 🤫</h2>
           <p className="subheader">{state.playerName}</p>
         </div>
-        <div className="mb-6">
-          <h2 className="subsubheader">Datum 📅</h2>
+        <div className="mb-6 ml-auto flex flex-col items-end">
+          <h2 className="subsubheader ">Datum 📅</h2>
           <p className="subheader">{day}</p>
         </div>
 
@@ -50,7 +50,7 @@ export default function ResultScreen() {
           <p className="subheader">{state.score} Punkte</p>
         </div>
 
-        <div className="mb-6">
+        <div className="mb-6 ml-auto flex flex-col items-end">
           <h2 className="subsubheader">Verwendete Power-Ups 💣</h2>
           <div className="flex gap-4">
             {selectedPowerUps.length > 0 ? (

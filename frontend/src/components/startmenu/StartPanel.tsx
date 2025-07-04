@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { powerUps } from "../../data/data";
-import { handleCallNewRound } from "../../api/quizAPI";
+import { powerUps, names, surnames } from "../../data/data";
+import {
+  handleCallNewRound,
+  setDifficulty as sendDifficultyToBackend,
+} from "../../api/quizAPI";
+import PowerupButton from "../audio/PowerupButton";
 
 export default function StartPanel() {
   const [playerName, setPlayerName] = useState("");
@@ -9,12 +13,16 @@ export default function StartPanel() {
   const [answerOption, setAnswerOption] = useState("2x auswählen");
   const [selected, setSelected] = useState<string[]>([]);
   const navigate = useNavigate();
+  const [showWarning, setShowWarning] = useState(false);
 
   const handleStart = (e: React.FormEvent) => {
     e.preventDefault();
     if (!playerName) {
+      setShowWarning(true);
       return;
     }
+
+    sendDifficultyToBackend(difficulty);
     handleCallNewRound();
 
     navigate("/game", {
@@ -25,6 +33,13 @@ export default function StartPanel() {
         selectedPowerUps: selected,
       },
     });
+  };
+
+  const randomName = () => {
+    const first = names[Math.floor(Math.random() * names.length)];
+    const last = surnames[Math.floor(Math.random() * surnames.length)];
+    setPlayerName(first + last);
+    setShowWarning(false);
   };
 
   const toggleSelection = (id: string) => {
@@ -54,15 +69,30 @@ export default function StartPanel() {
           className="w-full flex flex-col items-center"
           onSubmit={handleStart}
         >
-          <input
-            required={true}
-            type="text"
-            placeholder="Kim Meier"
-            value={playerName}
-            onChange={(e) => setPlayerName(e.target.value)}
-            className="mb-4 border-2 border-zinc-900 w-full p-2 focus:outline-2 focus:outline-white rounded-md max-w-72 mx-auto"
-          />
+          <div className="flex flex-col content-center gap-2 mb-4 ">
+            {showWarning && (
+              <p className="bg-red-600 p-2 rounded-md text-white text-sm text-center font-semibold">
+                !Bitte generiere zuerst einen Namen!
+              </p>
+            )}
+            {playerName ? (
+              <p className="font-serif text-3xl italic text-sky-700">
+                {playerName}
+              </p>
+            ) : (
+              <p className="text-2xl mx-auto text-black/50 italic">
+                "Platzhalter"
+              </p>
+            )}
 
+            <button
+              type="button"
+              onClick={randomName}
+              className="bg-zinc-900 text-white rounded-full py-2 px-4 font-black uppercase w-fit mx-auto"
+            >
+              Namen Generieren
+            </button>
+          </div>
           {/* Schwierigkeitsstufe */}
           <div className="my-2 w-full">
             <p className="subsubheader mb-2 w-full text-center">
@@ -86,14 +116,13 @@ export default function StartPanel() {
               </div>
             </div>
           </div>
-
           {/* Antwortoptionen */}
           <div className="my-2 w-full ">
             <p className="subsubheader mb-2 w-full text-center">
               Power-Ups auswählen
             </p>
-            <div className="flex justify-between ">
-              {["Keine", "2x Auswählen", "4x Zufällige"].map((label) => (
+            <div className="flex justify-between w-98 mx-auto ">
+              {["4x Zufällige", "2x Auswählen"].map((label) => (
                 <label
                   key={label}
                   className="flex flex-col items-center gap-1 w-1/3 text-center"
@@ -119,10 +148,9 @@ export default function StartPanel() {
               ))}
             </div>
           </div>
-
           {/* PowerUps nur anzeigen, wenn "2x auswählen" */}
           {answerOption === "2x Auswählen" ? (
-            <div className="flex flex-col w-full max-w-96 ">
+            <div className="flex flex-col w-full max-w-96">
               <div className="grid grid-cols-4 mt-4 gap-4 w-full place-items-center">
                 {powerUps.map((powerUp) => {
                   const isSelected = selected.includes(powerUp.id);
@@ -136,23 +164,23 @@ export default function StartPanel() {
                       key={powerUp.id}
                       className="flex flex-col items-center gap-1"
                     >
-                      <button
+                      <PowerupButton
                         type="button"
                         onClick={() =>
                           answerOption === "2x Auswählen" &&
                           !isDisabled &&
                           toggleSelection(powerUp.id)
                         }
-                        disabled={answerOption !== "2x Auswählen" || isDisabled}
+                        disabled={isDisabled}
+                        isActive={isSelected}
                         className={`aspect-square w-10 rounded-md flex items-center justify-center font-bold text-white
                           ${powerUp.color}
-                          ${isSelected ? "ring-4 ring-white" : "opacity-80 hover:opacity-100"}
-                          ${isDisabled ? "opacity-25 cursor-not-allowed" : "cursor-pointer"}
+                          ${isDisabled ? "opacity-25 cursor-not-allowed" : "opacity-80 hover:opacity-100"}
                         `}
                         title={powerUp.label}
                       >
                         {powerUp.short}
-                      </button>
+                      </PowerupButton>
                       <span className="text-sm text-center">
                         {powerUp.label}
                       </span>
@@ -160,16 +188,11 @@ export default function StartPanel() {
                   );
                 })}
               </div>
-              <p className="text-sm mx-auto mt-4">
-                {answerOption === "2x Auswählen"
-                  ? "Wähle 2 Power-Ups aus!"
-                  : "Zufällig ausgewählte Power-Ups"}
-              </p>
             </div>
           ) : null}
           <button
             type="submit"
-            className=" cursor-pointer italic mt-4 p-2 bg-zinc-900 text-white rounded-lg w-48 text-xl uppercase font-semibold"
+            className=" cursor-pointer italic mt-8 p-2 bg-zinc-900 text-white rounded-lg w-48 text-xl uppercase font-semibold"
           >
             {" "}
             Los Gehts!
