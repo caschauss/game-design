@@ -1,23 +1,28 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { powerUps } from "../../data/data";
-import { handleCallNewRound } from "../../api/quizAPI";
+import { powerUps, names, surnames } from "../../data/data";
+import {
+  handleCallNewRound,
+  setDifficulty as sendDifficultyToBackend,
+} from "../../api/quizAPI";
 import PowerupButton from "../audio/PowerupButton";
-import { useInputSoundEffect } from "../../hooks/useInputSoundEffect";
 
 export default function StartPanel() {
   const [playerName, setPlayerName] = useState("");
   const [difficulty, setDifficulty] = useState(1);
   const [answerOption, setAnswerOption] = useState("2x auswählen");
   const [selected, setSelected] = useState<string[]>([]);
-  const playInputSound = useInputSoundEffect("/audio/sounds/keyboard.mp3");
   const navigate = useNavigate();
+  const [showWarning, setShowWarning] = useState(false);
 
   const handleStart = (e: React.FormEvent) => {
     e.preventDefault();
     if (!playerName) {
+      setShowWarning(true);
       return;
     }
+
+    sendDifficultyToBackend(difficulty);
     handleCallNewRound();
 
     navigate("/game", {
@@ -28,6 +33,13 @@ export default function StartPanel() {
         selectedPowerUps: selected,
       },
     });
+  };
+
+  const randomName = () => {
+    const first = names[Math.floor(Math.random() * names.length)];
+    const last = surnames[Math.floor(Math.random() * surnames.length)];
+    setPlayerName(first + last);
+    setShowWarning(false);
   };
 
   const toggleSelection = (id: string) => {
@@ -57,18 +69,30 @@ export default function StartPanel() {
           className="w-full flex flex-col items-center"
           onSubmit={handleStart}
         >
-          <input
-            required={true}
-            type="text"
-            placeholder="Kim Meier"
-            value={playerName}
-            onChange={(e) => {
-              setPlayerName(e.target.value);
-              playInputSound();
-            }}
-            className="mb-4 border-2 border-zinc-900 w-full p-2 focus:outline-2 focus:outline-white rounded-md max-w-72 mx-auto"
-          />
+          <div className="flex flex-col content-center gap-2 mb-4 ">
+            {showWarning && (
+              <p className="bg-red-600 p-2 rounded-md text-white text-sm text-center font-semibold">
+                !Bitte generiere zuerst einen Namen!
+              </p>
+            )}
+            {playerName ? (
+              <p className="font-serif text-3xl italic text-sky-700">
+                {playerName}
+              </p>
+            ) : (
+              <p className="text-2xl mx-auto text-black/50 italic">
+                "Platzhalter"
+              </p>
+            )}
 
+            <button
+              type="button"
+              onClick={randomName}
+              className="bg-zinc-900 text-white rounded-full py-2 px-4 font-black uppercase w-fit mx-auto"
+            >
+              Namen Generieren
+            </button>
+          </div>
           {/* Schwierigkeitsstufe */}
           <div className="my-2 w-full">
             <p className="subsubheader mb-2 w-full text-center">
@@ -92,14 +116,13 @@ export default function StartPanel() {
               </div>
             </div>
           </div>
-
           {/* Antwortoptionen */}
           <div className="my-2 w-full ">
             <p className="subsubheader mb-2 w-full text-center">
               Power-Ups auswählen
             </p>
-            <div className="flex justify-between ">
-              {["Keine", "2x Auswählen", "4x Zufällige"].map((label) => (
+            <div className="flex justify-between w-98 mx-auto ">
+              {["4x Zufällige", "2x Auswählen"].map((label) => (
                 <label
                   key={label}
                   className="flex flex-col items-center gap-1 w-1/3 text-center"
@@ -125,7 +148,6 @@ export default function StartPanel() {
               ))}
             </div>
           </div>
-
           {/* PowerUps nur anzeigen, wenn "2x auswählen" */}
           {answerOption === "2x Auswählen" ? (
             <div className="flex flex-col w-full max-w-96">
@@ -168,7 +190,6 @@ export default function StartPanel() {
               </div>
             </div>
           ) : null}
-
           <button
             type="submit"
             className=" cursor-pointer italic mt-8 p-2 bg-zinc-900 text-white rounded-lg w-48 text-xl uppercase font-semibold"

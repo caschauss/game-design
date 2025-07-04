@@ -70,3 +70,57 @@ export const powerUps = [
     short: "TF", // Time Freeze
   },
 ];
+
+export const names = [
+  "xX_Ang3la_Xx", // Angela
+  "Helmüt_1337", // Helmut
+  "W1llyB0y", // Willy
+  "0laf_daBoss", // Olaf
+  "Ann4L33na", // Annalena
+  "Fr4nzy_HD", // Franz
+  "KarLxKilla", // Karl
+  "S4hRaStorm", // Sahra
+  "xGregorxSnipz", // Gregor
+  "Jo5chkaSwag", // Joschka
+  "ChrizzL_Pro", // Christian
+  "Th3o_H3uss", // Theodor
+  "L0th4rBlaze", // Lothar
+  "K1ausRage", // Klaus
+  "HeikoNoScope", // Heiko
+  "P33rStr1ke", // Peer
+  "GusT4vN8", // Gustav
+  "Er1ka_Chan", // Erika – Anime-Gamertag Easter Egg
+  "0skarXtreme", // Oskar
+  "HansD_420", // Hans-Dietrich
+];
+
+export const surnames = [
+  "Merk3lZz",
+  "x_Scholz_x",
+  "K0hlBoi",
+  "Brandtastic",
+  "LaFont_69",
+  "BaerBanger",
+  "W4genKN1fe",
+  "Straussinator",
+  "L1ndN3rHD",
+  "Gys1God",
+  "FischScopez",
+  "x_Schm1dt_x",
+  "MaasDestr0ya",
+  "SteinBrick420",
+  "Gen$cherXD",
+  "H0neck3rZ",
+  "WehnerWolf",
+  "R4melowRekt",
+  "SeeH4xx",
+  "J3n$Sp4hn",
+  "Sch4euble1337",
+  "Lasch3tFailz",
+  "SoederXx",
+  "KubickSchnaps",
+  "St0ib3rMix",
+  "Gaulrekt",
+  "P3tryCry",
+  "BerbockBug",
+];

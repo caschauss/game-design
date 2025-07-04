@@ -35,6 +35,8 @@ export default function GameScreen() {
   const [questionData, setQuestionData] = useState<QuestionData | null>(null);
   const [currentRoundTimeLeft, setCurrentRoundTimeLeft] = useState(0); // <-- Neu: Speichert die verbleibende Zeit
   const [lives, setLives] = useState(3);
+  const [hasAnswered, setHasAnswered] = useState(false);
+
   const { state } = useLocation() as {
     state: {
       playerName: string;
@@ -102,12 +104,12 @@ export default function GameScreen() {
         name: round.name,
         options,
       });
-      // Setzt die Zeit für die neue Runde zurück, wenn die Runde geladen ist
-      setCurrentRoundTimeLeft(30); // Oder whatever Ihre Standard-Duration ist
+      setCurrentRoundTimeLeft(30);
     }
     setChosenPowerUp(null);
 
     fetchNewRound();
+    setHasAnswered(false);
   }, [currentRound]);
 
   // Callback, um die Zeit von GameHeader/CountdownBar zu erhalten
@@ -116,15 +118,15 @@ export default function GameScreen() {
   };
 
   const handleAnswer = async (short: string) => {
-    if (selectedAnswer || showFeedback || !questionData) return;
+    if (hasAnswered || selectedAnswer || showFeedback || !questionData) return;
 
+    setHasAnswered(true);
     setSelectedAnswer(short);
     setShowFeedback(true);
 
     const isCorrect = short === questionData.correct;
 
     if (isCorrect) {
-      // Calculate points as before
       let basePoints = 1000;
       const timeBonus = currentRoundTimeLeft * 100;
 
@@ -139,10 +141,16 @@ export default function GameScreen() {
       setScore((prev) => prev + newScore);
 
       setTimeout(async () => {
+        const nextRound = currentRound + 1;
+
+        if (nextRound % 5 === 0 && lives < 3) {
+          setLives((prev) => Math.min(prev + 1, 3));
+        }
+
         await handleCallNewRound();
         setSelectedAnswer(null);
         setShowFeedback(false);
-        setCurrentRound((prev) => prev + 1);
+        setCurrentRound(nextRound);
       }, 1000);
     } else {
       // Wrong answer: decrease lives by 1

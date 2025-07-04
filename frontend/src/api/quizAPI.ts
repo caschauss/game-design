@@ -52,3 +52,21 @@ export const handleCallNewRound = async () => {
     console.error("Error requesting new round: ", error);
   }
 };
+
+export const setDifficulty = async (difficulty: number) => {
+  try {
+    const res = await fetch(`${BASE_URL}/setdifficulty`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ difficulty }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to set difficulty");
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("Error setting difficulty:", error);
+  }
+};

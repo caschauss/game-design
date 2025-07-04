@@ -1,8 +1,21 @@
-import express from 'express';
-import cors from 'cors';
-import { callNewRound, getColor, getCurrentRoundInformation, getCurrentScore, setColor, testApi } from './api';
-import { model_getRoundInformation, model_getSelectedColor, model_setSelectedColor } from './model';
-import { controller_readExpressions } from './controller';
+import express from "express";
+import cors from "cors";
+import {
+  callNewRound,
+  getColor,
+  getCurrentRoundInformation,
+  getCurrentScore,
+  setColor,
+  testApi,
+  setCurrentDifficulty,
+} from "./api";
+import {
+  model_getRoundInformation,
+  model_getSelectedColor,
+  model_setSelectedColor,
+  setDifficulty as model_setDifficulty,
+} from "./model";
+import { controller_readExpressions } from "./controller";
 
 // Server setup
 const app = express();
@@ -10,12 +23,16 @@ app.use(cors());
 app.use(express.json());
 
 // Defining API endpoints found in api.ts
-app.post('/setcolor', setColor(model_setSelectedColor));
-app.post('/getcolor', getColor(model_getSelectedColor));
-app.post('/newround', callNewRound());
-app.post('/getscore', getCurrentScore())
-app.post('/testapi', testApi());
-app.post('/getroundinformation', getCurrentRoundInformation(model_getRoundInformation));
+app.post("/setcolor", setColor(model_setSelectedColor));
+app.post("/getcolor", getColor(model_getSelectedColor));
+app.post("/newround", callNewRound());
+app.post("/getscore", getCurrentScore());
+app.post("/testapi", testApi());
+app.post(
+  "/getroundinformation",
+  getCurrentRoundInformation(model_getRoundInformation),
+);
+app.post("/setdifficulty", setCurrentDifficulty(model_setDifficulty));
 
 controller_readExpressions();
 
