@@ -15,11 +15,14 @@
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.*",
     "@types/node": "^22.15.29",
+    "@types/sqlite3": "^5.1.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
   }
 }

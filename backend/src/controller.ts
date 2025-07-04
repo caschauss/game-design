@@ -1,4 +1,4 @@
-import expressionData from './expressions.json';
+import sqlite3 from 'sqlite3';
 import { model_getExpressionArray, model_setCorrectParty, model_setExpressionArray, model_setRoundInformation } from './model';
 
 interface ExpressionData {
@@ -11,29 +11,49 @@ interface ExpressionData {
     link: string;
 }
 
-// Reads and shuffles expressions to model
-export const controller_readExpressions = () => {
-    let newExpressionArray: ExpressionData[] = [];
-    expressionData.forEach(data => {
-        const expression: ExpressionData = {
-            expression: data.expression,
-            name: data.name,
-            party: data.party,
-            difficulty: data.difficulty,
-            date: data.date,
-            context: data.context,
-            link: data.link
-        };
-        newExpressionArray.push(expression);
+// Funktion zum Abrufen der Ausdrücke aus der Datenbank
+const getExpressionsFromDB = (callback: (expressions: ExpressionData[]) => void) => {
+    const db = new sqlite3.Database('./src/data.db', sqlite3.OPEN_READONLY, (err) => {
+        if (err) {
+            console.error('Fehler beim Öffnen der Datenbank:', err.message);
+            callback([]);
+        }
     });
 
-    // Shuffle Array Content
-    for (let i = newExpressionArray.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [newExpressionArray[i], newExpressionArray[j]] = [newExpressionArray[j], newExpressionArray[i]];
-    }
+    const sql = 'SELECT expression, name, party, difficulty, date, link, context FROM expressions';
 
-    model_setExpressionArray(newExpressionArray);
+    db.all(sql, [], (err, rows: ExpressionData[]) => { // Typ für rows definiert
+        if (err) {
+            console.error('Fehler beim Abrufen der Daten:', err.message);
+            callback([]);
+        } else {
+            const expressions: ExpressionData[] = rows.map(row => ({
+                expression: row.expression,
+                name: row.name,
+                party: row.party,
+                difficulty: row.difficulty,
+                date: row.date,
+                context: row.context,
+                link: row.link
+            }));
+            callback(expressions);
+        }
+    });
+
+    db.close();
+};
+
+// Liest und mischt die Ausdrücke aus der Datenbank
+export const controller_readExpressions = () => {
+    getExpressionsFromDB((newExpressionArray) => {
+        // Shuffle Array Content
+        for (let i = newExpressionArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newExpressionArray[i], newExpressionArray[j]] = [newExpressionArray[j], newExpressionArray[i]];
+        }
+
+        model_setExpressionArray(newExpressionArray);
+    });
 }
 
 export const controller_newRound = () => {
@@ -41,7 +61,6 @@ export const controller_newRound = () => {
 
     if (expressionArray.length > 0) {
         let lastElement: ExpressionData = expressionArray[expressionArray.length - 1];
-
 
         if (lastElement === undefined) {
             // Fallback Expression in case Array is empty (game finished)
