@@ -11,20 +11,19 @@ interface ExpressionData {
     link: string;
 }
 
-// Funktion zum Abrufen der Ausdrücke aus der Datenbank
 const getExpressionsFromDB = (callback: (expressions: ExpressionData[]) => void) => {
     const db = new sqlite3.Database('./src/data.db', sqlite3.OPEN_READONLY, (err) => {
         if (err) {
-            console.error('Fehler beim Öffnen der Datenbank:', err.message);
+            console.error('Error opening db:', err.message);
             callback([]);
         }
     });
 
     const sql = 'SELECT expression, name, party, difficulty, date, link, context FROM expressions';
 
-    db.all(sql, [], (err, rows: ExpressionData[]) => { // Typ für rows definiert
+    db.all(sql, [], (err, rows: ExpressionData[]) => {
         if (err) {
-            console.error('Fehler beim Abrufen der Daten:', err.message);
+            console.error('Error reading data:', err.message);
             callback([]);
         } else {
             const expressions: ExpressionData[] = rows.map(row => ({
@@ -43,7 +42,6 @@ const getExpressionsFromDB = (callback: (expressions: ExpressionData[]) => void)
     db.close();
 };
 
-// Liest und mischt die Ausdrücke aus der Datenbank
 export const controller_readExpressions = () => {
     getExpressionsFromDB((newExpressionArray) => {
         // Shuffle Array Content
