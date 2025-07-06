@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { controller_newRound } from "./controller";
+import { controller_addEntryToScoreboard, controller_newRound } from "./controller";
 import { model_getCurrentScore, model_getScoreboard } from "./model";
 
 interface ExpressionData {
@@ -103,6 +103,8 @@ export const setScoreboardEntry = () => {
 
     let datetime = new Date();
     console.log("Received new scoreboard request at " + datetime + " with data " + JSON.stringify(req.body.scoreBoard));
+
+    controller_addEntryToScoreboard("" + datetime, req.body.scoreBoard);
     res.json({ message: "ok" });
   };
 };

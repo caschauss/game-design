@@ -52,10 +52,10 @@ export default function NavBar() {
 
   const handleSendScoreboardEntry = async () => {
     let scoreBoardEntry: ScoreboardData = {
-      name: "Rüdiger",
+      name: "HierKönnteIhreWerbungStehen(RaLfScHuHmAcHeR)",
       score: 1312,
-      date: "heute",
-      powerups: "ne"
+      date: "YYYY-MM-DD",
+      powerups: ""
     }
     const response = await getSendScoreboardEntry(scoreBoardEntry);
     console.log("Sent Scoreboard entry. Response: ", response.message);

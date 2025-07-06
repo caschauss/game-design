@@ -1,5 +1,6 @@
 import sqlite3 from 'sqlite3';
 import { model_getDifficulty, model_getExpressionArray, model_getLastIndex, model_setCorrectParty, model_setExpressionArray, model_setLastIndex, model_setRoundInformation, model_setScoreboard } from './model';
+import { setScoreboardEntry } from './api';
 
 interface ExpressionData {
     expression: string;
@@ -12,10 +13,10 @@ interface ExpressionData {
 }
 
 interface ScoreboardData {
-  name: string;
-  score: number;
-  date: string;
-  powerups?: string;
+    name: string;
+    score: number;
+    date: string;
+    powerups?: string;
 }
 
 const getExpressionsFromDB = (callback: (expressions: ExpressionData[]) => void) => {
@@ -85,6 +86,30 @@ export const controller_readScoreboard = () => {
     });
 
     db.close();
+}
+
+export const controller_addEntryToScoreboard = (datetime: string, entry: ScoreboardData) => {
+    let id: number = Date.now();
+
+    const db = new sqlite3.Database('./src/data.db', sqlite3.OPEN_READWRITE, (err) => {
+        if (err) {
+            console.error('Error opening db:', err.message);
+            return;
+        }
+    });
+
+    const sql = 'INSERT INTO scoreboard (id, name, score, date, powerups) VALUES (?, ?, ?, ?, ?)';
+
+    db.run(sql, [id, entry.name, entry.score, entry.date, entry.powerups || null], function (err) {
+        if (err) {
+            console.error('Error inserting data:', err.message);
+        } else {
+            console.log("Entry has been added for " + entry.name);
+        }
+    });
+
+    db.close();
+    controller_readScoreboard(); // updating Scoreboard in Model
 }
 
 export const controller_newRound = () => {
