@@ -13,7 +13,6 @@ interface ExpressionData {
 }
 
 interface ScoreboardData {
-  id: number;
   name: string;
   score: number;
   date: string;
@@ -72,10 +71,8 @@ export const getCurrentScore = () => {
   };
 };
 
-// Difficulty testRoute
-export const setCurrentDifficulty = (
-  model_setDifficulty: (d: number) => void,
-) => {
+// Setter for Difficulty
+export const setCurrentDifficulty = (model_setDifficulty: (d: number) => void,) => {
   return (req: Request, res: Response) => {
     const { difficulty } = req.body;
 
@@ -97,6 +94,16 @@ export const getScoreboard = () => {
     let scoreboard: ScoreboardData[] = model_getScoreboard();
     console.log("Received scoreboard request at " + datetime);
     res.json({ scoreboard: scoreboard });
+  };
+};
+
+// Setting Scoreboard Entry
+export const setScoreboardEntry = () => {
+  return (req: Request, res: Response) => {
+
+    let datetime = new Date();
+    console.log("Received new scoreboard request at " + datetime + " with data " + JSON.stringify(req.body.scoreBoard));
+    res.json({ message: "ok" });
   };
 };
 

@@ -12,7 +12,6 @@ interface ExpressionData {
 }
 
 interface ScoreboardData {
-  id: number;
   name: string;
   score: number;
   date: string;
@@ -69,14 +68,13 @@ export const controller_readScoreboard = () => {
         }
     });
 
-    const sql = 'SELECT  id, name, score, date, powerups FROM scoreboard';
+    const sql = 'SELECT  name, score, date, powerups FROM scoreboard';
 
     db.all(sql, [], (err, rows: ScoreboardData[]) => {
         if (err) {
             console.error('Error reading data:', err.message);
         } else {
             const scoreboard: ScoreboardData[] = rows.map(row => ({
-                id: row.id,
                 name: row.name,
                 score: row.score,
                 date: row.date,

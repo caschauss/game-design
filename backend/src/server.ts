@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { callNewRound, getColor, getCurrentRoundInformation, getCurrentScore, setColor, testApi, setCurrentDifficulty, getScoreboard, } from "./api";
+import { callNewRound, getColor, getCurrentRoundInformation, getCurrentScore, setColor, testApi, setCurrentDifficulty, getScoreboard, setScoreboardEntry } from "./api";
 import { model_getRoundInformation, model_getSelectedColor, model_setSelectedColor, model_setDifficulty, } from "./model";
 import { controller_readExpressions, controller_readScoreboard } from "./controller";
 
@@ -18,6 +18,7 @@ app.post("/testapi", testApi());
 app.post("/getroundinformation", getCurrentRoundInformation(model_getRoundInformation),);
 app.post("/setdifficulty", setCurrentDifficulty(model_setDifficulty));
 app.post("/getscoreboard", getScoreboard());
+app.post("/setscoreboardentry", setScoreboardEntry());
 
 controller_readExpressions();
 controller_readScoreboard();

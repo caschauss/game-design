@@ -1,5 +1,12 @@
 // src/api/quizAPI.ts
 
+interface ScoreboardData {
+  name: string;
+  score: number;
+  date: string;
+  powerups?: string;
+}
+
 const BASE_URL = "http://localhost:3000";
 
 export const testAPI = async () => {
@@ -45,6 +52,15 @@ export const getScoreboard = async () => {
   });
   return res.json();
 };
+
+export const getSendScoreboardEntry = async (scoreBoardEntry: ScoreboardData) => {
+  const res = await fetch(`${BASE_URL}/setscoreboardentry`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ scoreBoard: scoreBoardEntry }),
+  });
+  return res.json();
+}
 
 export const handleCallNewRound = async () => {
   try {
