@@ -8,6 +8,14 @@ interface ExpressionData {
   link: string;
 }
 
+interface ScoreboardData {
+  id: number;
+  name: string;
+  score: number;
+  date: string;
+  powerups?: string;
+}
+
 let roundInformation: ExpressionData = {
   expression: "placeholder expression",
   name: "placeholder name",
@@ -24,6 +32,7 @@ let correctParty: string = "SPD";
 let currentScore: number = 0;
 let currentDifficulty: number = 0;
 let lastIndex: number = 0;
+let scoreboard: ScoreboardData[] = [];
 
 // Getting current round information
 export const model_getRoundInformation = () => {
@@ -84,7 +93,7 @@ export const model_setDifficulty = (newDifficulty: number) => {
 };
 
 export const model_getDifficulty = () => {
-  return currentDifficulty
+  return currentDifficulty;
 };
 
 export const model_setLastIndex = (newLastIndex: number) => {
@@ -92,5 +101,13 @@ export const model_setLastIndex = (newLastIndex: number) => {
 };
 
 export const model_getLastIndex = () => {
-  return lastIndex
+  return lastIndex;
+};
+
+export const model_setScoreboard = (newScoreboard: ScoreboardData[]) => {
+  scoreboard = newScoreboard;
+};
+
+export const model_getScoreboard = () => {
+  return scoreboard;
 };

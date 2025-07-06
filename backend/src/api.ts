@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { controller_newRound } from "./controller";
-import { model_getCurrentScore } from "./model";
+import { model_getCurrentScore, model_getScoreboard } from "./model";
 
 interface ExpressionData {
   expression: string;
@@ -10,6 +10,14 @@ interface ExpressionData {
   date: number;
   context?: string;
   link: string;
+}
+
+interface ScoreboardData {
+  id: number;
+  name: string;
+  score: number;
+  date: string;
+  powerups?: string;
 }
 
 // Getting current color
@@ -64,15 +72,6 @@ export const getCurrentScore = () => {
   };
 };
 
-// API test route
-export const testApi = () => {
-  return (req: Request, res: Response) => {
-    let datetime = new Date();
-    console.log("Received API Test at " + datetime);
-    res.json({ message: "test" });
-  };
-};
-
 // Difficulty testRoute
 export const setCurrentDifficulty = (
   model_setDifficulty: (d: number) => void,
@@ -88,5 +87,24 @@ export const setCurrentDifficulty = (
     } else {
       res.status(400).json({ error: "Invalid difficulty value" });
     }
+  };
+};
+
+// Getting Scoreboard
+export const getScoreboard = () => {
+  return (req: Request, res: Response) => {
+    let datetime = new Date();
+    let scoreboard: ScoreboardData[] = model_getScoreboard();
+    console.log("Received scoreboard request at " + datetime);
+    res.json({ scoreboard: scoreboard });
+  };
+};
+
+// API test route
+export const testApi = () => {
+  return (req: Request, res: Response) => {
+    let datetime = new Date();
+    console.log("Received API Test at " + datetime);
+    res.json({ message: "test" });
   };
 };

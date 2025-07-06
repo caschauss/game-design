@@ -1,5 +1,5 @@
 import sqlite3 from 'sqlite3';
-import { model_getDifficulty, model_getExpressionArray, model_getLastIndex, model_setCorrectParty, model_setExpressionArray, model_setLastIndex, model_setRoundInformation } from './model';
+import { model_getDifficulty, model_getExpressionArray, model_getLastIndex, model_setCorrectParty, model_setExpressionArray, model_setLastIndex, model_setRoundInformation, model_setScoreboard } from './model';
 
 interface ExpressionData {
     expression: string;
@@ -9,6 +9,14 @@ interface ExpressionData {
     date: number;
     context?: string;
     link: string;
+}
+
+interface ScoreboardData {
+  id: number;
+  name: string;
+  score: number;
+  date: string;
+  powerups?: string;
 }
 
 const getExpressionsFromDB = (callback: (expressions: ExpressionData[]) => void) => {
@@ -52,6 +60,33 @@ export const controller_readExpressions = () => {
 
         model_setExpressionArray(newExpressionArray);
     });
+}
+
+export const controller_readScoreboard = () => {
+    const db = new sqlite3.Database('./src/data.db', sqlite3.OPEN_READONLY, (err) => {
+        if (err) {
+            console.error('Error opening db:', err.message);
+        }
+    });
+
+    const sql = 'SELECT  id, name, score, date, powerups FROM scoreboard';
+
+    db.all(sql, [], (err, rows: ScoreboardData[]) => {
+        if (err) {
+            console.error('Error reading data:', err.message);
+        } else {
+            const scoreboard: ScoreboardData[] = rows.map(row => ({
+                id: row.id,
+                name: row.name,
+                score: row.score,
+                date: row.date,
+                powerups: row.powerups,
+            }));
+            model_setScoreboard(scoreboard);
+        }
+    });
+
+    db.close();
 }
 
 export const controller_newRound = () => {

@@ -5,6 +5,7 @@ import {
   setColor,
   getRoundInformation,
   handleCallNewRound,
+  getScoreboard,
 } from "../api/quizAPI";
 
 import { useState } from "react";
@@ -34,6 +35,11 @@ export default function NavBar() {
     const roundData = await getRoundInformation();
     console.log("Round Info:", roundData);
     setOutput(roundData.expression);
+  };
+
+  const handleCallScoreboard = async () => {
+    const scoreboard = await getScoreboard();
+    console.log("Scoreboard Info:", scoreboard);
   };
 
   const handleGetScore = async () => {
@@ -76,6 +82,9 @@ export default function NavBar() {
       </button>
       <button className="debugBtn" onClick={handleCallNewRound}>
         New Round
+      </button>
+      <button className="debugBtn" onClick={handleCallScoreboard}>
+        Scoreboard
       </button>
       <h1> = {output}</h1>
     </nav>
