@@ -78,8 +78,10 @@ export const model_setCurrentScore = (newCurrentScore: number) => {
   currentScore = newCurrentScore;
 };
 
-export const setDifficulty = (newDifficulty: number) => {
+export const model_setDifficulty = (newDifficulty: number) => {
   currentDifficulty = newDifficulty;
 };
 
-export const getDifficulty = () => currentDifficulty;
+export const model_getDifficulty = () => {
+  return currentDifficulty
+};

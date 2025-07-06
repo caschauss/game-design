@@ -1,5 +1,5 @@
 import sqlite3 from 'sqlite3';
-import { model_getExpressionArray, model_setCorrectParty, model_setExpressionArray, model_setRoundInformation } from './model';
+import { model_getDifficulty, model_getExpressionArray, model_setCorrectParty, model_setExpressionArray, model_setRoundInformation } from './model';
 
 interface ExpressionData {
     expression: string;
@@ -55,6 +55,7 @@ export const controller_readExpressions = () => {
 }
 
 export const controller_newRound = () => {
+    console.log("Loading expressions with difficulty " + model_getDifficulty());
     let expressionArray: ExpressionData[] = model_getExpressionArray();
 
     if (expressionArray.length > 0) {
