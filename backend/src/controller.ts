@@ -69,7 +69,7 @@ export const controller_readScoreboard = () => {
         }
     });
 
-    const sql = 'SELECT  name, score, date, powerups FROM scoreboard';
+    const sql = 'SELECT  name, score, date, powerups FROM scoreboard ORDER BY score DESC';
 
     db.all(sql, [], (err, rows: ScoreboardData[]) => {
         if (err) {
@@ -105,11 +105,11 @@ export const controller_addEntryToScoreboard = (datetime: string, entry: Scorebo
             console.error('Error inserting data:', err.message);
         } else {
             console.log("Entry has been added for " + entry.name);
+            controller_readScoreboard(); // updating Scoreboard in Model
         }
     });
 
     db.close();
-    controller_readScoreboard(); // updating Scoreboard in Model
 }
 
 export const controller_newRound = () => {
