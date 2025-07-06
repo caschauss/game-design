@@ -1,5 +1,5 @@
 import sqlite3 from 'sqlite3';
-import { model_getDifficulty, model_getExpressionArray, model_setCorrectParty, model_setExpressionArray, model_setRoundInformation } from './model';
+import { model_getDifficulty, model_getExpressionArray, model_getLastIndex, model_setCorrectParty, model_setExpressionArray, model_setLastIndex, model_setRoundInformation } from './model';
 
 interface ExpressionData {
     expression: string;
@@ -55,34 +55,26 @@ export const controller_readExpressions = () => {
 }
 
 export const controller_newRound = () => {
-    console.log("Loading expressions with difficulty " + model_getDifficulty());
     let expressionArray: ExpressionData[] = model_getExpressionArray();
+    let requestedDifficulty = model_getDifficulty();
 
-    if (expressionArray.length > 0) {
-        let lastElement: ExpressionData = expressionArray[expressionArray.length - 1];
+    // Fallback Expression in case Array is empty (game finished) or if none of matching difficulty can be found
+    let expression: ExpressionData = { expression: "GAME FINISHED", name: "GAME FINISHED", party: "FINISHED", difficulty: 0, date: 0, context: "GAME FINISHED", link: "GAME FINISHED" };
+    // Fallback for empty Array
+    if (expressionArray.length === 0) {
+        model_setRoundInformation(expression);
+    }
 
-        if (lastElement === undefined) {
-            // Fallback Expression in case Array is empty (game finished)
-            model_setRoundInformation({
-                expression: "GAME FINISHED",
-                name: "GAME FINISHED",
-                party: "FINISHED",
-                difficulty: 0,
-                date: 0,
-                context: "GAME FINISHED",
-                link: "GAME FINISHED"
-            });
-            model_setCorrectParty("FINISHED");
-        } else {
-            let newExpressionArray = new Array(Math.max(expressionArray.length - 1, 0)); // create Array with size at least 0 or larger
-
-            for (let index = 0; index < newExpressionArray.length; index++) {
-                newExpressionArray[index] = expressionArray[index];
-            }
-
-            model_setRoundInformation(lastElement);
-            model_setCorrectParty(lastElement.party);
-            model_setExpressionArray(newExpressionArray);
+    // Searching for matching difficulty
+    for (let index: number = model_getLastIndex(); index < expressionArray.length; index++) {
+        console.log("Checking index = " + index + " with data: " + expressionArray[index]);
+        if (expressionArray[index].difficulty === requestedDifficulty) {
+            expression = expressionArray[index]; // take the first matching expression
+            model_setLastIndex(index + 1);
+            index = expressionArray.length; // terminate loop
         }
     }
+
+    model_setRoundInformation(expression);
+    model_setCorrectParty(expression.party)
 }
