@@ -67,7 +67,6 @@ export const controller_newRound = () => {
 
     // Searching for matching difficulty
     for (let index: number = model_getLastIndex(); index < expressionArray.length; index++) {
-        console.log("Checking index = " + index + " with data: " + expressionArray[index]);
         if (expressionArray[index].difficulty === requestedDifficulty) {
             expression = expressionArray[index]; // take the first matching expression
             model_setLastIndex(index + 1);
