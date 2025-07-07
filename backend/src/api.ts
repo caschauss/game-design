@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { controller_newRound } from "./controller";
-import { model_getCurrentScore } from "./model";
+import { controller_addEntryToScoreboard, controller_newRound } from "./controller";
+import { model_getCurrentScore, model_getScoreboard } from "./model";
 
 interface ExpressionData {
   expression: string;
@@ -10,6 +10,13 @@ interface ExpressionData {
   date: number;
   context?: string;
   link: string;
+}
+
+interface ScoreboardData {
+  name: string;
+  score: number;
+  date: string;
+  powerups?: string;
 }
 
 // Getting current color
@@ -26,12 +33,7 @@ export const setColor = (model_setSelectedColor: (color: string) => void) => {
   return (req: Request, res: Response) => {
     let datetime = new Date();
     model_setSelectedColor(req.body.color);
-    console.log(
-      "Received colour modification at " +
-        datetime +
-        " to color: " +
-        req.body.color,
-    );
+    console.log("Received colour modification at " + datetime + " to color: " + req.body.color,);
     res.json({ message: "ok" });
   };
 };
@@ -69,28 +71,49 @@ export const getCurrentScore = () => {
   };
 };
 
+// Setter for Difficulty
+export const setCurrentDifficulty = (model_setDifficulty: (d: number) => void,) => {
+  return (req: Request, res: Response) => {
+    const { difficulty } = req.body;
+
+    if (typeof difficulty === "number") {
+      model_setDifficulty(difficulty);
+      let datetime = new Date();
+      console.log("Received new difficulty call at " + datetime + " for difficulty: " + difficulty);
+      res.json({ message: "Difficulty set" });
+    } else {
+      res.status(400).json({ error: "Invalid difficulty value" });
+    }
+  };
+};
+
+// Getting Scoreboard
+export const getScoreboard = () => {
+  return (req: Request, res: Response) => {
+    let datetime = new Date();
+    let scoreboard: ScoreboardData[] = model_getScoreboard();
+    console.log("Received scoreboard request at " + datetime);
+    res.json({ scoreboard: scoreboard });
+  };
+};
+
+// Setting Scoreboard Entry
+export const setScoreboardEntry = () => {
+  return (req: Request, res: Response) => {
+
+    let datetime = new Date();
+    console.log("Received new scoreboard request at " + datetime + " with data " + JSON.stringify(req.body.scoreBoard));
+
+    controller_addEntryToScoreboard("" + datetime, req.body.scoreBoard);
+    res.json({ message: "ok" });
+  };
+};
+
 // API test route
 export const testApi = () => {
   return (req: Request, res: Response) => {
     let datetime = new Date();
     console.log("Received API Test at " + datetime);
     res.json({ message: "test" });
-  };
-};
-
-// Difficulty testRoute
-export const setCurrentDifficulty = (
-  model_setDifficulty: (d: number) => void,
-) => {
-  return (req: Request, res: Response) => {
-    const { difficulty } = req.body;
-
-    if (typeof difficulty === "number") {
-      model_setDifficulty(difficulty);
-      console.log("Difficulty set to:", difficulty);
-      res.json({ message: "Difficulty set" });
-    } else {
-      res.status(400).json({ error: "Invalid difficulty value" });
-    }
   };
 };

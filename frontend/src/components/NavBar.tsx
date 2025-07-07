@@ -5,9 +5,18 @@ import {
   setColor,
   getRoundInformation,
   handleCallNewRound,
+  getScoreboard,
+  getSendScoreboardEntry,
 } from "../api/quizAPI";
 
 import { useState } from "react";
+
+interface ScoreboardData {
+  name: string;
+  score: number;
+  date: string;
+  powerups?: string;
+}
 
 export default function NavBar() {
   const [output, setOutput] = useState("");
@@ -34,6 +43,22 @@ export default function NavBar() {
     const roundData = await getRoundInformation();
     console.log("Round Info:", roundData);
     setOutput(roundData.expression);
+  };
+
+  const handleCallScoreboard = async () => {
+    const scoreboard = await getScoreboard();
+    console.log("Scoreboard Info:", scoreboard);
+  };
+
+  const handleSendScoreboardEntry = async () => {
+    let scoreBoardEntry: ScoreboardData = {
+      name: "HierKönnteIhreWerbungStehen(RaLfScHuHmAcHeR)",
+      score: 1312,
+      date: "YYYY-MM-DD",
+      powerups: ""
+    }
+    const response = await getSendScoreboardEntry(scoreBoardEntry);
+    console.log("Sent Scoreboard entry. Response: ", response.message);
   };
 
   const handleGetScore = async () => {
@@ -76,6 +101,12 @@ export default function NavBar() {
       </button>
       <button className="debugBtn" onClick={handleCallNewRound}>
         New Round
+      </button>
+      <button className="debugBtn" onClick={handleCallScoreboard}>
+        Scoreboard
+      </button>
+      <button className="debugBtn" onClick={handleSendScoreboardEntry}>
+        Send Scoreboard
       </button>
       <h1> = {output}</h1>
     </nav>

@@ -1,5 +1,6 @@
 import sqlite3 from 'sqlite3';
-import { model_getExpressionArray, model_setCorrectParty, model_setExpressionArray, model_setRoundInformation } from './model';
+import { model_getDifficulty, model_getExpressionArray, model_getLastIndex, model_setCorrectParty, model_setExpressionArray, model_setLastIndex, model_setRoundInformation, model_setScoreboard } from './model';
+import { setScoreboardEntry } from './api';
 
 interface ExpressionData {
     expression: string;
@@ -11,20 +12,26 @@ interface ExpressionData {
     link: string;
 }
 
-// Funktion zum Abrufen der Ausdrücke aus der Datenbank
+interface ScoreboardData {
+    name: string;
+    score: number;
+    date: string;
+    powerups?: string;
+}
+
 const getExpressionsFromDB = (callback: (expressions: ExpressionData[]) => void) => {
     const db = new sqlite3.Database('./src/data.db', sqlite3.OPEN_READONLY, (err) => {
         if (err) {
-            console.error('Fehler beim Öffnen der Datenbank:', err.message);
+            console.error('Error opening db:', err.message);
             callback([]);
         }
     });
 
     const sql = 'SELECT expression, name, party, difficulty, date, link, context FROM expressions';
 
-    db.all(sql, [], (err, rows: ExpressionData[]) => { // Typ für rows definiert
+    db.all(sql, [], (err, rows: ExpressionData[]) => {
         if (err) {
-            console.error('Fehler beim Abrufen der Daten:', err.message);
+            console.error('Error reading data:', err.message);
             callback([]);
         } else {
             const expressions: ExpressionData[] = rows.map(row => ({
@@ -43,7 +50,6 @@ const getExpressionsFromDB = (callback: (expressions: ExpressionData[]) => void)
     db.close();
 };
 
-// Liest und mischt die Ausdrücke aus der Datenbank
 export const controller_readExpressions = () => {
     getExpressionsFromDB((newExpressionArray) => {
         // Shuffle Array Content
@@ -56,34 +62,76 @@ export const controller_readExpressions = () => {
     });
 }
 
+export const controller_readScoreboard = () => {
+    const db = new sqlite3.Database('./src/data.db', sqlite3.OPEN_READONLY, (err) => {
+        if (err) {
+            console.error('Error opening db:', err.message);
+        }
+    });
+
+    const sql = 'SELECT  name, score, date, powerups FROM scoreboard ORDER BY score DESC';
+
+    db.all(sql, [], (err, rows: ScoreboardData[]) => {
+        if (err) {
+            console.error('Error reading data:', err.message);
+        } else {
+            const scoreboard: ScoreboardData[] = rows.map(row => ({
+                name: row.name,
+                score: row.score,
+                date: row.date,
+                powerups: row.powerups,
+            }));
+            model_setScoreboard(scoreboard);
+        }
+    });
+
+    db.close();
+}
+
+export const controller_addEntryToScoreboard = (datetime: string, entry: ScoreboardData) => {
+    let id: number = Date.now();
+
+    const db = new sqlite3.Database('./src/data.db', sqlite3.OPEN_READWRITE, (err) => {
+        if (err) {
+            console.error('Error opening db:', err.message);
+            return;
+        }
+    });
+
+    const sql = 'INSERT INTO scoreboard (id, name, score, date, powerups) VALUES (?, ?, ?, ?, ?)';
+
+    db.run(sql, [id, entry.name, entry.score, entry.date, entry.powerups || null], function (err) {
+        if (err) {
+            console.error('Error inserting data:', err.message);
+        } else {
+            console.log("Entry has been added for " + entry.name);
+            controller_readScoreboard(); // updating Scoreboard in Model
+        }
+    });
+
+    db.close();
+}
+
 export const controller_newRound = () => {
     let expressionArray: ExpressionData[] = model_getExpressionArray();
+    let requestedDifficulty = model_getDifficulty();
 
-    if (expressionArray.length > 0) {
-        let lastElement: ExpressionData = expressionArray[expressionArray.length - 1];
+    // Fallback Expression in case Array is empty (game finished) or if none of matching difficulty can be found
+    let expression: ExpressionData = { expression: "GAME FINISHED", name: "GAME FINISHED", party: "FINISHED", difficulty: 0, date: 0, context: "GAME FINISHED", link: "GAME FINISHED" };
+    // Fallback for empty Array
+    if (expressionArray.length === 0) {
+        model_setRoundInformation(expression);
+    }
 
-        if (lastElement === undefined) {
-            // Fallback Expression in case Array is empty (game finished)
-            model_setRoundInformation({
-                expression: "GAME FINISHED",
-                name: "GAME FINISHED",
-                party: "FINISHED",
-                difficulty: 0,
-                date: 0,
-                context: "GAME FINISHED",
-                link: "GAME FINISHED"
-            });
-            model_setCorrectParty("FINISHED");
-        } else {
-            let newExpressionArray = new Array(Math.max(expressionArray.length - 1, 0)); // create Array with size at least 0 or larger
-
-            for (let index = 0; index < newExpressionArray.length; index++) {
-                newExpressionArray[index] = expressionArray[index];
-            }
-
-            model_setRoundInformation(lastElement);
-            model_setCorrectParty(lastElement.party);
-            model_setExpressionArray(newExpressionArray);
+    // Searching for matching difficulty
+    for (let index: number = model_getLastIndex(); index < expressionArray.length; index++) {
+        if (expressionArray[index].difficulty === requestedDifficulty) {
+            expression = expressionArray[index]; // take the first matching expression
+            model_setLastIndex(index + 1);
+            index = expressionArray.length; // terminate loop
         }
     }
+
+    model_setRoundInformation(expression);
+    model_setCorrectParty(expression.party)
 }
