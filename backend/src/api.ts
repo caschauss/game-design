@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { controller_addEntryToScoreboard, controller_newRound } from "./controller";
-import { model_getCurrentScore, model_getScoreboard } from "./model";
+import { model_getCanData, model_getCurrentScore, model_getScoreboard, model_setCanData } from "./model";
 
 interface ExpressionData {
   expression: string;
@@ -17,6 +17,13 @@ interface ScoreboardData {
   score: number;
   date: string;
   powerups?: string;
+}
+
+interface CanData {
+  colour: string;
+  poti: string;
+  logButton: string;
+  exitButton: string;
 }
 
 // Getting current color
@@ -105,6 +112,28 @@ export const setScoreboardEntry = () => {
     console.log("Received new scoreboard request at " + datetime + " with data " + JSON.stringify(req.body.scoreBoard));
 
     controller_addEntryToScoreboard("" + datetime, req.body.scoreBoard);
+    res.json({ message: "ok" });
+  };
+};
+
+// Getting CanData
+export const getCanData = () => {
+  return (req: Request, res: Response) => {
+    let datetime = new Date();
+    let currentCanData: CanData = model_getCanData();
+    console.log("Received CanData request at " + datetime);
+    res.json({ scoreboard: currentCanData });
+  };
+};
+
+// Setting CanData
+export const setCanData = () => {
+  return (req: Request, res: Response) => {
+
+    let datetime = new Date();
+    console.log("Received new CanData at " + datetime + " with data " + JSON.stringify(req.body));
+
+    model_setCanData(req.body);
     res.json({ message: "ok" });
   };
 };

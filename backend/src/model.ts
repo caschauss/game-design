@@ -15,6 +15,13 @@ interface ScoreboardData {
   powerups?: string;
 }
 
+interface CanData {
+  colour: string;
+  poti: string;
+  logButton: string;
+  exitButton: string;
+}
+
 let roundInformation: ExpressionData = {
   expression: "placeholder expression",
   name: "placeholder name",
@@ -24,6 +31,13 @@ let roundInformation: ExpressionData = {
   context: "placeholder context",
   link: "placeholder link",
 };
+
+let currentCanData: CanData = {
+  colour: "undefined",
+  poti: "undefined",
+  logButton: "undefined",
+  exitButton: "undefined"
+}
 
 let selectedColor = "black";
 let expressionArray: ExpressionData[] = [];
@@ -109,4 +123,12 @@ export const model_setScoreboard = (newScoreboard: ScoreboardData[]) => {
 
 export const model_getScoreboard = () => {
   return scoreboard;
+};
+
+export const model_setCanData = (newCanData: CanData) => {
+  currentCanData = newCanData;
+};
+
+export const model_getCanData = () => {
+  return currentCanData;
 };
