@@ -75,7 +75,7 @@ export default function AnswerGrid({
             disabled={!!selectedAnswer}
             className={`${base} ${bgColor} ${borderStyles[idx]}`}
           >
-            <div className="w-full h-full flex flex-row items-center gap-8 p-8 justify-between">
+            <div className="w-full h-full flex flex-row items-center gap-8 p-8 justify-between cursor-pointer">
               <div className="flex flex-col">
                 <div className="text-4xl w-full text-start font-black">
                   {option.short}

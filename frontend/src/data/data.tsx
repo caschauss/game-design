@@ -30,6 +30,11 @@ export const PARTIES = {
     img: "/logos/bsw.jpg",
     color: "bg-indigo-700",
   },
+  Linke: {
+    full: "Die Linken",
+    img: "/logos/linke.jpg",
+    color: "bg-red-700",
+  },
 } as const;
 
 export const powerUps = [
@@ -89,7 +94,7 @@ export const names = [
   "HeikoNoScope", // Heiko
   "P33rStr1ke", // Peer
   "GusT4vN8", // Gustav
-  "Er1ka_Chan", // Erika – Anime-Gamertag Easter Egg
+  "Er1ka_Chan", // Erika
   "0skarXtreme", // Oskar
   "HansD_420", // Hans-Dietrich
 ];
