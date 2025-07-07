@@ -1,5 +1,13 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { powerUps } from "../data/data";
+import { getSendScoreboardEntry } from "../api/quizAPI";
+
+export interface ScoreboardData {
+  name: string;
+  score: number;
+  date: string;
+  powerups?: string;
+}
 
 export default function ResultScreen() {
   const navigate = useNavigate();
@@ -16,7 +24,7 @@ export default function ResultScreen() {
 
   const selectedPowerUps = state.selectedPowerUps ?? [];
 
-  const handleBackToMain = () => {
+  const handleBackToMain = async () => {
     const resultData = {
       playerName: state.playerName,
       score: state.score,
@@ -28,7 +36,29 @@ export default function ResultScreen() {
       }),
     };
 
+    await handleSendScoreboardEntry();
     navigate("/", { state: resultData });
+  };
+
+  const handleSendScoreboardEntry = async () => {
+    const scoreBoardEntry: ScoreboardData = {
+      name: state.playerName,
+      score: state.score,
+      date: day, // das lokal formatierte Datum
+      powerups: selectedPowerUps
+        .map((id) => {
+          const pu = powerUps.find((p) => p.id === id);
+          return pu?.short ?? id;
+        })
+        .join(","), // Powerups als kommaseparierte Liste
+    };
+
+    try {
+      const response = await getSendScoreboardEntry(scoreBoardEntry);
+      console.log("Sent Scoreboard entry. Response: ", response.message);
+    } catch (error) {
+      console.error("Fehler beim Senden des Scoreboard-Eintrags:", error);
+    }
   };
 
   return (

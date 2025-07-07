@@ -11,7 +11,8 @@ function App() {
         <Router>
           <BackgroundMusic />
           <div className="bg-zinc-900 h-screen w-screen text-white">
-            <NavBar />
+            {/* <NavBar /> */}
+
             <AppRoutes />
           </div>
         </Router>
