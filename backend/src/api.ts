@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { controller_addEntryToScoreboard, controller_newRound } from "./controller";
+import { controller_addEntryToScoreboard, controller_newRound, controller_readExpressions } from "./controller";
 import { model_getCanData, model_getCurrentScore, model_getScoreboard, model_setCanData } from "./model";
 
 interface ExpressionData {
@@ -134,6 +134,15 @@ export const setCanData = () => {
     console.log("Received new CanData at " + datetime + " with data " + JSON.stringify(req.body));
 
     model_setCanData(req.body);
+    res.json({ message: "ok" });
+  };
+};
+
+export const reloadExpressionArray = () => {
+  return (req: Request, res: Response) => {
+    let datetime = new Date();
+    console.log("Received ExpressionArray reload request at " + datetime);
+    controller_readExpressions();
     res.json({ message: "ok" });
   };
 };

@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { callNewRound, getColor, getCurrentRoundInformation, getCurrentScore, setColor, testApi, setCurrentDifficulty, getScoreboard, setScoreboardEntry, getCanData, setCanData } from "./api";
+import { callNewRound, getColor, getCurrentRoundInformation, getCurrentScore, setColor, testApi, setCurrentDifficulty, getScoreboard, setScoreboardEntry, getCanData, setCanData, reloadExpressionArray } from "./api";
 import { model_getRoundInformation, model_getSelectedColor, model_setSelectedColor, model_setDifficulty, } from "./model";
 import { controller_readExpressions, controller_readScoreboard } from "./controller";
 
@@ -12,6 +12,7 @@ app.use(express.json());
 // Defining API endpoints found in api.ts
 app.post("/setcolor", setColor(model_setSelectedColor));
 app.post("/getcolor", getColor(model_getSelectedColor));
+app.post("/reloadexpressionarray", reloadExpressionArray())
 app.post("/newround", callNewRound());
 app.post("/getscore", getCurrentScore());
 app.post("/testapi", testApi());
