@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { powerUps } from "../data/data";
-import { getSendScoreboardEntry } from "../api/quizAPI";
+import { getSendScoreboardEntry, reloadExpressionArray } from "../api/quizAPI";
 
 export interface ScoreboardData {
   name: string;
@@ -30,14 +30,18 @@ export default function ResultScreen() {
       score: state.score,
       date: day,
       selectedPowerUps: selectedPowerUps.map((id) => {
-        // Convert IDs (e.g. "doublePoints") to their 2-letter codes "2X" from powerUps data
         const pu = powerUps.find((p) => p.id === id);
-        return pu?.short ?? id; // fallback to ID if no match
+        return pu?.short ?? id;
       }),
     };
 
-    await handleSendScoreboardEntry();
-    navigate("/", { state: resultData });
+    try {
+      await handleSendScoreboardEntry();
+      await reloadExpressionArray(); // ← Reload-Methode aufrufen
+      navigate("/", { state: resultData });
+    } catch (error) {
+      console.error("Fehler beim Zurückkehren zum Hauptmenü:", error);
+    }
   };
 
   const handleSendScoreboardEntry = async () => {

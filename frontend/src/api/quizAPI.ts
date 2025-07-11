@@ -99,3 +99,18 @@ export const setDifficulty = async (difficulty: number) => {
     console.error("Error setting difficulty:", error);
   }
 };
+
+export const reloadExpressionArray = async () => {
+  const response = await fetch(`${BASE_URL}/reloadexpressionarray`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Fehler beim Neuladen des ExpressionArrays");
+  }
+
+  return response.json();
+};
