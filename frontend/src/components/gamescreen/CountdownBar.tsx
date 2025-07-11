@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 interface CountdownBarProps {
   duration: number;
@@ -22,6 +22,17 @@ export default function CountdownBar({
   const [freezeTimeLeft, setFreezeTimeLeft] = useState(FREEZE_DURATION);
   const [freezeActive, setFreezeActive] = useState(false);
 
+  const reminderSoundRef = useRef<HTMLAudioElement | null>(null);
+  const tickSoundRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    reminderSoundRef.current = new Audio("/audio/sounds/low-on-time.mp3");
+    tickSoundRef.current = new Audio("/audio/sounds/buttonClick.mp3");
+
+    // Optional: Tick-Sound soll leiser sein
+    tickSoundRef.current.volume = 0.5;
+  }, []);
+
   // This controls visibility of freeze bar:
   // Show bar if powerup active at all times
   const showFreezeBar = isTimeFreezeActive;
@@ -33,17 +44,31 @@ export default function CountdownBar({
     }
     setFreezeTimeLeft(FREEZE_DURATION);
     setFreezeActive(false);
+
+    // Sound stoppen und auf Anfang zurücksetzen:
+    if (tickSoundRef.current) {
+      tickSoundRef.current.pause();
+      tickSoundRef.current.currentTime = 0;
+    }
   }, [duration, isTimeFreezeActive]);
 
   // Main timer countdown
   useEffect(() => {
     if (mainTimeLeft <= 0) {
       if (isTimeFreezeActive && !freezeActive) {
-        setFreezeActive(true); // start freeze countdown now
+        setFreezeActive(true);
       } else if (!freezeActive) {
         onComplete();
       }
       return;
+    }
+
+    if (mainTimeLeft === Math.floor(duration / 2)) {
+      reminderSoundRef.current?.play();
+    }
+
+    if (mainTimeLeft <= 10) {
+      tickSoundRef.current?.play();
     }
 
     onTimeUpdate(mainTimeLeft);
@@ -59,6 +84,7 @@ export default function CountdownBar({
     onTimeUpdate,
     isTimeFreezeActive,
     freezeActive,
+    duration,
   ]);
 
   // Freeze bonus timer countdown

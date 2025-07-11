@@ -8,6 +8,8 @@ interface QuestionDisplayProps {
   showDate: boolean;
   showContext: boolean;
   isFromPowerUp: (type: string) => boolean;
+  scoreDelta?: number | null; // wird gesetzt, wenn Punkte steigen
+  lifeDelta?: number | null;
 }
 
 export default function QuestionDisplay({
