@@ -19,6 +19,7 @@ interface GameHeaderProps {
   lives: number;
   onTimeUp: () => void;
   onTimeUpdate: (timeLeft: number) => void;
+  showFeedback: boolean;
 }
 
 export default function GameHeader({
@@ -36,11 +37,14 @@ export default function GameHeader({
   lives,
   onTimeUp,
   onTimeUpdate,
+  showFeedback,
 }: GameHeaderProps) {
-  const showAuthor = chosenPowerUp === "showPolitician";
-  const showDate = chosenPowerUp === "showYear";
-  const showContext = chosenPowerUp === "showContext";
+  const showAuthor = chosenPowerUp === "showPolitician" || showFeedback;
+  const showDate = chosenPowerUp === "showYear" || showFeedback;
+  const showContext = chosenPowerUp === "showContext" || showFeedback;
   const showDoublePoints = chosenPowerUp === "doublePoints";
+
+  const isFromPowerup = (type: string) => chosenPowerUp === type;
 
   // Kein lokalen State für chosenPowerUp oder usedPowerUps
 
@@ -62,6 +66,7 @@ export default function GameHeader({
           showAuthor={showAuthor}
           showDate={showDate}
           showContext={showContext}
+          isFromPowerUp={isFromPowerup}
         />
         <ScoreRoundDisplay
           score={score}

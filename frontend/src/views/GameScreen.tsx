@@ -36,7 +36,7 @@ export default function GameScreen() {
   const [currentRoundTimeLeft, setCurrentRoundTimeLeft] = useState(0);
   const [lives, setLives] = useState(3);
   const [hasAnswered, setHasAnswered] = useState(false);
-  const [disabledOptions, setDisabledOptions] = useState<string[]>([]); // ✅ Neu
+  const [disabledOptions, setDisabledOptions] = useState<string[]>([]);
 
   const { state } = useLocation() as {
     state: {
@@ -81,7 +81,22 @@ export default function GameScreen() {
       const data = await getRoundInformation();
       const round = data.roundInformation;
 
+      // ✅ Explizite Abfrage: wenn party === "FINISHED"
+      if (round?.party === "FINISHED") {
+        navigate("/result", {
+          state: {
+            playerName: state.playerName,
+            score,
+            total: currentRound,
+            selectedPowerUps,
+            usedPowerUps,
+          },
+        });
+        return;
+      }
+
       const correctKey = round.party as PartyKey;
+
       if (!correctKey || !PARTIES[correctKey]) {
         console.warn("Unknown or missing party key:", correctKey);
         return;
@@ -114,8 +129,7 @@ export default function GameScreen() {
       setCurrentRoundTimeLeft(30);
       setHasAnswered(false);
       setChosenPowerUp(null);
-
-      setDisabledOptions([]); // Nur zurücksetzen, keine neue Logik hier
+      setDisabledOptions([]);
     }
 
     fetchNewRound();
@@ -158,7 +172,7 @@ export default function GameScreen() {
         setSelectedAnswer(null);
         setShowFeedback(false);
         setCurrentRound(nextRound);
-      }, 1000);
+      }, 3000);
     } else {
       setLives((prevLives) => {
         const newLives = prevLives - 1;
@@ -180,7 +194,7 @@ export default function GameScreen() {
             setSelectedAnswer(null);
             setShowFeedback(false);
             setCurrentRound((prev) => prev + 1);
-          }, 3000);
+          }, 5000);
         }
 
         return newLives;
@@ -210,6 +224,7 @@ export default function GameScreen() {
         lives={lives}
         onTimeUp={() => handleAnswer("wrong")}
         onTimeUpdate={handleTimeUpdate}
+        showFeedback={showFeedback}
       />
 
       <AnswerGrid
@@ -218,7 +233,7 @@ export default function GameScreen() {
         selectedAnswer={selectedAnswer}
         showFeedback={showFeedback}
         handleAnswer={handleAnswer}
-        disabledOptions={disabledOptions} // ✅ Neu
+        disabledOptions={disabledOptions}
       />
     </div>
   );
