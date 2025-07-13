@@ -46,17 +46,27 @@ export default function NavBar() {
   };
 
   const handleCallScoreboard = async () => {
-    const scoreboard = await getScoreboard();
-    console.log("Scoreboard Info:", scoreboard);
+    try {
+      const scoreboard = await getScoreboard(); // ✅ Jetzt direkt ein Array
+
+      const sorted = scoreboard.sort(
+        (a: ScoreboardData, b: ScoreboardData) => b.score - a.score,
+      );
+      const top10 = sorted.slice(0, 10);
+
+      console.log("Top 10 Scoreboard Entries:", top10);
+    } catch (error) {
+      console.error("Fehler beim Abrufen des Scoreboards:", error);
+    }
   };
 
   const handleSendScoreboardEntry = async () => {
-    let scoreBoardEntry: ScoreboardData = {
+    const scoreBoardEntry: ScoreboardData = {
       name: "HierKönnteIhreWerbungStehen(RaLfScHuHmAcHeR)",
       score: 1312,
       date: "YYYY-MM-DD",
-      powerups: ""
-    }
+      powerups: "",
+    };
     const response = await getSendScoreboardEntry(scoreBoardEntry);
     console.log("Sent Scoreboard entry. Response: ", response.message);
   };

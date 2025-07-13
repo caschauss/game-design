@@ -1,5 +1,13 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { powerUps } from "../data/data";
+import { getSendScoreboardEntry, reloadExpressionArray } from "../api/quizAPI";
+
+export interface ScoreboardData {
+  name: string;
+  score: number;
+  date: string;
+  powerups?: string;
+}
 
 export default function ResultScreen() {
   const navigate = useNavigate();
@@ -16,19 +24,37 @@ export default function ResultScreen() {
 
   const selectedPowerUps = state.selectedPowerUps ?? [];
 
-  const handleBackToMain = () => {
+  const handleBackToMain = async () => {
     const resultData = {
       playerName: state.playerName,
       score: state.score,
       date: day,
-      selectedPowerUps: selectedPowerUps.map((id) => {
-        // Convert IDs (e.g. "doublePoints") to their 2-letter codes "2X" from powerUps data
-        const pu = powerUps.find((p) => p.id === id);
-        return pu?.short ?? id; // fallback to ID if no match
-      }),
+      selectedPowerUps: selectedPowerUps, // Nur IDs, keine Icons!
     };
 
-    navigate("/", { state: resultData });
+    try {
+      await handleSendScoreboardEntry();
+      await reloadExpressionArray(); // Reload-Methode aufrufen
+      navigate("/", { state: resultData });
+    } catch (error) {
+      console.error("Fehler beim Zurückkehren zum Hauptmenü:", error);
+    }
+  };
+
+  const handleSendScoreboardEntry = async () => {
+    const scoreBoardEntry: ScoreboardData = {
+      name: state.playerName,
+      score: state.score,
+      date: day, // lokal formatiertes Datum
+      powerups: selectedPowerUps.join(","), // Nur IDs als kommaseparierte Liste
+    };
+
+    try {
+      const response = await getSendScoreboardEntry(scoreBoardEntry);
+      console.log("Sent Scoreboard entry. Response: ", response.message);
+    } catch (error) {
+      console.error("Fehler beim Senden des Scoreboard-Eintrags:", error);
+    }
   };
 
   return (
@@ -62,7 +88,7 @@ export default function ResultScreen() {
                     <div
                       className={`w-10 h-10 rounded-md flex items-center justify-center text-white font-bold text-sm ${p.color}`}
                     >
-                      {p.short}
+                      {p.icon}
                     </div>
                     <span className="text-sm mt-1 text-center">{p.label}</span>
                   </div>

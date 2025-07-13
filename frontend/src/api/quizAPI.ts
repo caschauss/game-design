@@ -50,17 +50,21 @@ export const getScoreboard = async () => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message: "test" }),
   });
-  return res.json();
+
+  const json = await res.json();
+  return json.scoreboard; // ✅ Jetzt nur das Array zurückgeben!
 };
 
-export const getSendScoreboardEntry = async (scoreBoardEntry: ScoreboardData) => {
+export const getSendScoreboardEntry = async (
+  scoreBoardEntry: ScoreboardData,
+) => {
   const res = await fetch(`${BASE_URL}/setscoreboardentry`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ scoreBoard: scoreBoardEntry }),
   });
   return res.json();
-}
+};
 
 export const handleCallNewRound = async () => {
   try {
@@ -94,4 +98,19 @@ export const setDifficulty = async (difficulty: number) => {
   } catch (error) {
     console.error("Error setting difficulty:", error);
   }
+};
+
+export const reloadExpressionArray = async () => {
+  const response = await fetch(`${BASE_URL}/reloadexpressionarray`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Fehler beim Neuladen des ExpressionArrays");
+  }
+
+  return response.json();
 };

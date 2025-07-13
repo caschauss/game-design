@@ -1,3 +1,14 @@
+import {
+  FaCalendar,
+  FaUserTie,
+  FaBook,
+  FaCut,
+  FaStar,
+  FaClock,
+  FaPercent,
+  FaInfo,
+} from "react-icons/fa";
+
 export const PARTIES = {
   SPD: {
     full: "Sozialdemokratische Partei Deutschlands",
@@ -42,37 +53,37 @@ export const powerUps = [
     id: "showYear",
     color: "bg-blue-600",
     label: "Jahr",
-    short: "JH", // Jahr
+    icon: <FaCalendar />, // Icon statt short
   },
   {
     id: "showPolitician",
     color: "bg-green-600",
     label: "Politiker",
-    short: "PO", // Politiker
+    icon: <FaUserTie />,
   },
   {
     id: "showContext",
     color: "bg-indigo-500",
     label: "Kontext",
-    short: "KO", // Kontext
+    icon: <FaInfo />,
   },
   {
-    id: "removeFalse",
+    id: "fiftyfifty",
     color: "bg-red-500",
-    label: "−2 Falsch",
-    short: "-2", // Falsch 2
+    label: "50%",
+    icon: <FaPercent />,
   },
   {
     id: "doublePoints",
     color: "bg-pink-600",
     label: "2× Punkte",
-    short: "2X", // 2x Punkte
+    icon: <FaStar />,
   },
   {
     id: "timeFreeze",
     color: "bg-cyan-500",
     label: "+10s",
-    short: "TF", // Time Freeze
+    icon: <FaClock />,
   },
 ];
 

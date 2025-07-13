@@ -7,6 +7,9 @@ interface QuestionDisplayProps {
   showAuthor: boolean;
   showDate: boolean;
   showContext: boolean;
+  isFromPowerUp: (type: string) => boolean;
+  scoreDelta?: number | null; // wird gesetzt, wenn Punkte steigen
+  lifeDelta?: number | null;
 }
 
 export default function QuestionDisplay({
@@ -18,6 +21,7 @@ export default function QuestionDisplay({
   showAuthor,
   showDate,
   showContext,
+  isFromPowerUp,
 }: QuestionDisplayProps) {
   return (
     <div className="flex flex-col w-full items-center gap-8 ">
@@ -34,20 +38,38 @@ export default function QuestionDisplay({
 
         <div className="w-full flex justify-between">
           {showAuthor && (
-            <p className="text-xl italic text-green-500 border-2 border-green-600 bg-green-600/15 p-2 rounded-md">
+            <p
+              className={`text-xl italic border-2 p-2 rounded-md ${
+                isFromPowerUp("showPolitician")
+                  ? "text-green-500 border-green-600 bg-green-600/15"
+                  : "text-white border-white/40 bg-white/10"
+              }`}
+            >
               von {author}
             </p>
           )}
           {showDate && (
-            <p className="text-xl italic text-blue-400 border-2 border-blue-600 bg-blue-600/15 p-2 rounded-md">
+            <p
+              className={`text-xl italic border-2 p-2 rounded-md ${
+                isFromPowerUp("showYear")
+                  ? "text-blue-400 border-blue-600 bg-blue-600/15"
+                  : "text-white border-white/40 bg-white/10"
+              }`}
+            >
               im Jahr {date}
             </p>
           )}
         </div>
       </div>
       {showContext && (
-        <div className="w-full max-w-5xl border-2 border-indigo-500 bg-indigo-500/15 p-4 rounded-xl">
-          <div className="flex gap-4 font-bold text-indigo-300 items-center">
+        <div
+          className={`w-full max-w-5xl border-2 p-4 rounded-xl ${
+            isFromPowerUp("showContext")
+              ? "border-indigo-500 bg-indigo-500/15 text-indigo-300"
+              : "border-white/30 bg-white/10 text-white"
+          }`}
+        >
+          <div className="flex gap-4 font-bold items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

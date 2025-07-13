@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 interface ScoreRoundDisplayProps {
   score: number;
   round: number;
@@ -11,7 +13,58 @@ export default function ScoreRoundDisplay({
   showDoublePoints,
   lives,
 }: ScoreRoundDisplayProps) {
+  const [displayedScore, setDisplayedScore] = useState(score);
+  const [scoreDelta, setScoreDelta] = useState<number | null>(null);
   const maxLives = 3;
+  const [displayedLives, setDisplayedLives] = useState(lives);
+
+  useEffect(() => {
+    if (lives === displayedLives) return;
+
+    // Wenn Leben dazukommt
+    if (lives > displayedLives) {
+      const timeout = setTimeout(() => {
+        setDisplayedLives(lives);
+      }, 300); // Zeit für Pop-Animation
+
+      return () => clearTimeout(timeout);
+    }
+
+    // Wenn Leben verloren geht (optional: direkt updaten)
+    setDisplayedLives(lives);
+  }, [lives]);
+
+  useEffect(() => {
+    if (score === displayedScore) return;
+
+    const diff = score - displayedScore;
+    const steps = 20;
+    const stepAmount = diff / steps;
+    let currentStep = 0;
+
+    // Zeige +Punkte neben dem Score
+    setScoreDelta(diff);
+
+    const interval = setInterval(() => {
+      currentStep++;
+      setDisplayedScore((prev) => {
+        const next = prev + stepAmount;
+        return currentStep >= steps ? score : Math.round(next);
+      });
+
+      if (currentStep >= steps) {
+        clearInterval(interval);
+      }
+    }, 20);
+
+    // Entferne das Delta nach 1 Sekunde
+    const timeout = setTimeout(() => setScoreDelta(null), 1000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, [score]);
 
   return (
     <div className="flex flex-col w-full max-w-32 text-right gap-4">
@@ -26,7 +79,16 @@ export default function ScoreRoundDisplay({
           )}
           <h3 className="text-xl pl-2">Punkte</h3>
         </div>
-        <p className="text-xl font-bold">{score}</p>
+        <div className="flex flex-row w-full gap-2 justify-end items-center">
+          {scoreDelta !== null && (
+            <span className="text-green-400 text-sm font-bold animate-float-up">
+              +{scoreDelta}
+            </span>
+          )}
+          <p className="text-xl font-bold transition-all duration-300 ease-out ">
+            {displayedScore}
+          </p>
+        </div>
       </div>
 
       <div>
