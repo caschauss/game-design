@@ -179,7 +179,7 @@ export default function StartPanel() {
                         `}
                         title={powerUp.label}
                       >
-                        {powerUp.short}
+                        {powerUp.icon}
                       </PowerupButton>
                       <span className="text-sm text-center">
                         {powerUp.label}

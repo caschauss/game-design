@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { powerUps } from "../../data/data"; // Pfad anpassen falls nötig
 import { getScoreboard, getSendScoreboardEntry } from "../../api/quizAPI";
+import React from "react";
 
 type LeaderboardEntry = {
   rank: number | null;
@@ -15,7 +16,7 @@ type PowerUp = {
   id: string;
   color: string;
   label: string;
-  short: string;
+  icon: React.JSX.Element;
 };
 
 interface ScoreboardData {
@@ -27,11 +28,11 @@ interface ScoreboardData {
 
 const powerUpMeta = Object.fromEntries(
   powerUps.map((pu: PowerUp) => [
-    pu.short,
+    pu.id,
     {
       color: pu.color,
       label: pu.label,
-      short: pu.short,
+      short: pu.icon,
     },
   ]),
 );
@@ -216,9 +217,7 @@ export default function LeaderboardPanel() {
                           className={`w-6 h-6 rounded text-xs font-bold flex items-center justify-center text-white ${
                             powerUpMeta[code]?.color ?? "bg-gray-500"
                           }`}
-                          title={
-                            powerUpMeta[code]?.label || powerUpMeta[code]?.short
-                          }
+                          title={powerUpMeta[code]?.label}
                         >
                           {powerUpMeta[code]?.short || code}
                         </div>

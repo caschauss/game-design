@@ -29,15 +29,12 @@ export default function ResultScreen() {
       playerName: state.playerName,
       score: state.score,
       date: day,
-      selectedPowerUps: selectedPowerUps.map((id) => {
-        const pu = powerUps.find((p) => p.id === id);
-        return pu?.short ?? id;
-      }),
+      selectedPowerUps: selectedPowerUps, // Nur IDs, keine Icons!
     };
 
     try {
       await handleSendScoreboardEntry();
-      await reloadExpressionArray(); // ← Reload-Methode aufrufen
+      await reloadExpressionArray(); // Reload-Methode aufrufen
       navigate("/", { state: resultData });
     } catch (error) {
       console.error("Fehler beim Zurückkehren zum Hauptmenü:", error);
@@ -48,13 +45,8 @@ export default function ResultScreen() {
     const scoreBoardEntry: ScoreboardData = {
       name: state.playerName,
       score: state.score,
-      date: day, // das lokal formatierte Datum
-      powerups: selectedPowerUps
-        .map((id) => {
-          const pu = powerUps.find((p) => p.id === id);
-          return pu?.short ?? id;
-        })
-        .join(","), // Powerups als kommaseparierte Liste
+      date: day, // lokal formatiertes Datum
+      powerups: selectedPowerUps.join(","), // Nur IDs als kommaseparierte Liste
     };
 
     try {
@@ -96,7 +88,7 @@ export default function ResultScreen() {
                     <div
                       className={`w-10 h-10 rounded-md flex items-center justify-center text-white font-bold text-sm ${p.color}`}
                     >
-                      {p.short}
+                      {p.icon}
                     </div>
                     <span className="text-sm mt-1 text-center">{p.label}</span>
                   </div>

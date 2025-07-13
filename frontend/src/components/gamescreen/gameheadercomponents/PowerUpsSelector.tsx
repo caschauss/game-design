@@ -47,7 +47,7 @@ export default function PowerUpsSelector({
                     isSelected ? "ring-4 ring-yellow-300" : ""
                   }`}
                 >
-                  {p.short}
+                  {p.icon}
                 </div>
                 <span className="text-sm text-center">{p.label}</span>
               </ActivatePowerup>
