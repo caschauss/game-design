@@ -26,7 +26,7 @@ export default function QuestionDisplay({
   return (
     <div className="flex flex-col w-full items-center gap-8 ">
       <h1 className="text-xl">PolitikschMERZen</h1>
-      <div className="flex flex-col gap-8 items-end ">
+      <div className="flex flex-col gap-8 items-end">
         <a
           className="text-3xl italic font-bold max-w-5xl text-center line-clamp-5"
           href={source}
@@ -36,7 +36,7 @@ export default function QuestionDisplay({
           "{question}"
         </a>
 
-        <div className="w-full flex justify-between">
+        <div className="w-full flex justify-between max-w-5xl">
           {showAuthor && (
             <p
               className={`text-xl italic border-2 p-2 rounded-md ${

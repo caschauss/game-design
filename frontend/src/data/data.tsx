@@ -1,8 +1,6 @@
 import {
   FaCalendar,
   FaUserTie,
-  FaBook,
-  FaCut,
   FaStar,
   FaClock,
   FaPercent,
