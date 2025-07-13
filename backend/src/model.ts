@@ -4,7 +4,7 @@ interface ExpressionData {
   party: string;
   difficulty: number;
   date: number;
-  context?: string;
+  context: string;
   link: string;
 }
 
