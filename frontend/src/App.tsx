@@ -1,6 +1,5 @@
 import { BrowserRouter as Router } from "react-router-dom";
 import AppRoutes from "./routes";
-import NavBar from "./components/NavBar";
 import BackgroundMusic from "./components/audio/BackgroundMusic";
 import { SoundSettingsProvider } from "./components/audio/SoundSettings";
 
