@@ -9,7 +9,7 @@ interface CountdownBarProps {
 }
 
 export default function CountdownBar({
-  duration = 30,
+  duration = 60,
   onComplete,
   onTimeUpdate,
   powerups,

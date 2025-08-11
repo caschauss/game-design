@@ -81,7 +81,7 @@ export default function GameHeader({
 
       <div className="w-full px-8 mt-4">
         <CountdownBar
-          duration={30}
+          duration={60}
           onComplete={onTimeUp}
           onTimeUpdate={onTimeUpdate}
           powerups={chosenPowerUp ?? ""}
