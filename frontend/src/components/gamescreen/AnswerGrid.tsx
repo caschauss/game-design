@@ -63,7 +63,7 @@ export default function AnswerGrid({
             : isSelected
               ? "bg-red-600"
               : "bg-zinc-800"
-          : "bg-zinc-800 hover:bg-zinc-700";
+          : "bg-zinc-800";
 
         return (
           <button
@@ -72,10 +72,16 @@ export default function AnswerGrid({
             onClick={() => onClickAnswer(option.short)}
             disabled={isDisabled}
             className={`${base} ${bgColor} ${borderStyles[idx]} ${
-              isDisabled ? "opacity-50 cursor-not-allowed" : ""
+              isDisabled ? "opacity-50 cursor-default" : ""
             }`}
           >
-            <div className="w-full h-full flex flex-row items-center gap-8 p-8 justify-between cursor-pointer">
+            <div
+              className={`w-full h-full flex flex-row items-center gap-8 p-8 justify-between  ${
+                isDisabled
+                  ? "opacity-50 cursor-default"
+                  : "cursor-pointer hover:bg-zinc-700"
+              }`}
+            >
               <div className="flex flex-col">
                 <div className="text-4xl w-full text-start font-black">
                   {option.short}
