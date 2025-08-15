@@ -6,6 +6,8 @@ import RandomEffectOverlay from "../components/gamescreen/RandomEffectOverlay";
 import { getRoundInformation, handleCallNewRound } from "../api/quizAPI";
 import { PARTIES } from "../data/data";
 import { useRandomEvents } from "../hooks/useRandomEvents";
+import { useDisabledOptions } from "../hooks/useDisabledOptions";
+import { useScore } from "../hooks/useScore";
 
 type PartyKey = keyof typeof PARTIES;
 
@@ -42,11 +44,9 @@ export default function GameScreen() {
   const [currentRound, setCurrentRound] = useState(0);
   const [questionData, setQuestionData] = useState<QuestionData | null>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [score, setScore] = useState(0);
   const [showFeedback, setShowFeedback] = useState(false);
   const [lives, setLives] = useState(3);
   const [hasAnswered, setHasAnswered] = useState(false);
-  const [disabledOptions, setDisabledOptions] = useState<string[]>([]);
   const [selectedPowerUps, setSelectedPowerUps] = useState<string[]>(
     state.selectedPowerUps || [],
   );
@@ -54,10 +54,12 @@ export default function GameScreen() {
     state.usedPowerUps || [],
   );
   const [chosenPowerUp, setChosenPowerUp] = useState<string | null>(null);
-
   const [currentRoundTimeLeft, setCurrentRoundTimeLeft] = useState(0);
-
   const { activeEvent, setActiveEvent, triggerRandomEvent } = useRandomEvents();
+  const { disabledOptions, applyFiftyFifty, applySkipWrong, resetDisabled } =
+    useDisabledOptions();
+  const { score, addScore } = useScore({ initialScore: 0 });
+  const [eventMultiplier, setEventMultiplier] = useState(1);
 
   // Neue Runde laden
   useEffect(() => {
@@ -69,8 +71,14 @@ export default function GameScreen() {
 
       const event = triggerRandomEvent("preRound");
       if (event && event.type === "preRound") {
-        console.log("Pre-Round Event:", event.id);
         setActiveEvent(event); // Overlay sichtbar
+        if (event?.id === "doublePoints") {
+          setEventMultiplier(2);
+          console.log(eventMultiplier);
+        } else {
+          setEventMultiplier(1);
+          console.log(eventMultiplier);
+        }
       }
 
       if (round?.party === "FINISHED") {
@@ -116,7 +124,7 @@ export default function GameScreen() {
       setCurrentRoundTimeLeft(30);
       setHasAnswered(false);
       setChosenPowerUp(null);
-      setDisabledOptions([]);
+      resetDisabled();
     }
 
     fetchNewRound();
@@ -132,27 +140,19 @@ export default function GameScreen() {
     setChosenPowerUp(id);
 
     if (id === "fiftyfifty" && questionData) {
-      const wrongOptions = questionData.options.filter(
-        (opt) => opt.short !== questionData.correct,
-      );
-      const toDisable = wrongOptions
-        .sort(() => 0.5 - Math.random())
-        .slice(0, 2)
-        .map((opt) => opt.short);
-      setDisabledOptions(toDisable);
+      applyFiftyFifty({
+        correct: questionData.correct,
+        options: questionData.options,
+      });
     }
   };
 
   useEffect(() => {
     if (activeEvent?.id === "skipWrong" && questionData) {
-      const wrongOptions = questionData.options.filter(
-        (opt) => opt.short !== questionData.correct,
-      );
-      const toDisable = wrongOptions
-        .sort(() => 0.5 - Math.random())
-        .slice(0, 1)
-        .map((opt) => opt.short);
-      setDisabledOptions(toDisable);
+      applySkipWrong({
+        correct: questionData.correct,
+        options: questionData.options,
+      });
     }
   }, [activeEvent, questionData]);
 
@@ -164,15 +164,17 @@ export default function GameScreen() {
     setShowFeedback(true);
 
     const isCorrect = short === questionData.correct;
-    let newScore = score;
 
     if (isCorrect) {
-      // Punkte berechnen
-      let basePoints = 1000;
-      const timeBonus = currentRoundTimeLeft * 100;
-      basePoints *= selectedPowerUps.length > 0 ? 0.15 : 1.15;
-      newScore += basePoints + timeBonus;
-      setScore(newScore);
+      const multiplier = activeEvent?.id === "doublePoints" ? 2 : 1;
+
+      addScore(
+        currentRoundTimeLeft,
+        1000, // Basis
+        questionData.difficulty,
+        selectedPowerUps.length > 0,
+        multiplier,
+      );
 
       setTimeout(async () => {
         if ((currentRound + 1) % 5 === 0 && lives < 3)
@@ -192,24 +194,19 @@ export default function GameScreen() {
       const event = triggerRandomEvent("postRound");
       if (event?.id === "savingGrace") {
         setActiveEvent(event); // Overlay sichtbar
-        console.log("Saving Grace rettet dich!");
-        // Leben bleibt 1, Runde wird verzögert
         setTimeout(async () => {
-          // Runde normal weiterschalten, Leben bleibt 1
           await handleCallNewRound();
           setSelectedAnswer(null);
           setShowFeedback(false);
           setCurrentRound((prev) => prev + 1);
         }, 3000);
-        return; // wichtig, dass wir hier abbrechen, sonst wird Leben trotzdem abgezogen
+        return;
       }
     }
 
-    // Normales Leben abziehen
     setLives((prev) => prev - 1);
     setTimeout(async () => {
-      const lifeAfter = lives - 1;
-      if (lifeAfter <= 0) {
+      if (lives - 1 <= 0) {
         navigate("/result", {
           state: {
             playerName: state.playerName,
@@ -256,6 +253,7 @@ export default function GameScreen() {
         onTimeUp={() => handleAnswer("wrong")}
         onTimeUpdate={handleTimeUpdate}
         showFeedback={showFeedback}
+        eventMultiplier={eventMultiplier}
       />
 
       <AnswerGrid

@@ -17,14 +17,14 @@ export const RANDOM_EVENTS: RandomEvent[] = [
     id: "doublePoints",
     text: "Doppelte Punkte!",
     color: "yellow",
-    chance: 0.05,
+    chance: 0.05, // 0.05,
     type: "preRound",
   },
   {
     id: "skipWrong",
     text: "Eine Falsche Antwort Deaktiviert!",
     color: "blue",
-    chance: 1, //.05,
+    chance: 0.05, //.05,
     type: "preRound",
   },
 ];

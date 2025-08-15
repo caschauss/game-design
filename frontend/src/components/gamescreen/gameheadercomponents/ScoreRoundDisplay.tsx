@@ -5,6 +5,7 @@ interface ScoreRoundDisplayProps {
   round: number;
   showDoublePoints: boolean;
   lives: number;
+  eventMultiplier: number;
 }
 
 export default function ScoreRoundDisplay({
@@ -12,11 +13,13 @@ export default function ScoreRoundDisplay({
   round,
   showDoublePoints,
   lives,
+  eventMultiplier,
 }: ScoreRoundDisplayProps) {
   const [displayedScore, setDisplayedScore] = useState(score);
   const [scoreDelta, setScoreDelta] = useState<number | null>(null);
   const maxLives = 3;
   const [displayedLives, setDisplayedLives] = useState(lives);
+  const showEventMultiplier = eventMultiplier > 1;
 
   useEffect(() => {
     if (lives === displayedLives) return;
@@ -70,13 +73,23 @@ export default function ScoreRoundDisplay({
     <div className="flex flex-col w-full max-w-32 text-right gap-4">
       <div className="w-full">
         <div className="flex justify-end">
-          {showDoublePoints && (
-            <div className="flex w-full justify-between">
-              <p className="w-fit border-2 border-pink-600 text-pink-500 bg-pink-600/15 px-2 rounded-xl font-bold">
-                x2
-              </p>
-            </div>
-          )}
+          <div className="flex gap-2 w-fit">
+            {showDoublePoints && (
+              <div className="flex w-full justify-between">
+                <p className="w-fit border-2 border-pink-600 text-pink-500 bg-pink-600/15 px-2 rounded-xl font-bold">
+                  x2
+                </p>
+              </div>
+            )}
+            {showEventMultiplier && (
+              <div className="flex w-full justify-between">
+                <p className="w-fit border-2 border-yellow-600 text-yellow-500 bg-yellow-600/15 px-2 rounded-xl font-bold">
+                  x2
+                </p>
+              </div>
+            )}
+          </div>
+
           <h3 className="text-xl pl-2">Punkte</h3>
         </div>
         <div className="flex flex-row w-full gap-2 justify-end items-center">

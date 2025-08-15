@@ -20,6 +20,7 @@ interface GameHeaderProps {
   onTimeUp: () => void;
   onTimeUpdate: (timeLeft: number) => void;
   showFeedback: boolean;
+  eventMultiplier: number;
 }
 
 export default function GameHeader({
@@ -38,6 +39,7 @@ export default function GameHeader({
   onTimeUp,
   onTimeUpdate,
   showFeedback,
+  eventMultiplier,
 }: GameHeaderProps) {
   const showAuthor = chosenPowerUp === "showPolitician" || showFeedback;
   const showDate = chosenPowerUp === "showYear" || showFeedback;
@@ -73,6 +75,7 @@ export default function GameHeader({
           round={round}
           lives={lives}
           showDoublePoints={showDoublePoints}
+          eventMultiplier={eventMultiplier}
         />
       </div>
 
