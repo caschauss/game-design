@@ -25,7 +25,7 @@ export default function StartPanel() {
     sendDifficultyToBackend(difficulty);
     handleCallNewRound();
 
-    navigate("/game", {
+    navigate("/tutorial", {
       state: {
         playerName,
         difficulty,

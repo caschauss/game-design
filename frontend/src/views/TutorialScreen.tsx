@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import RuleStep from "../components/tutorial/RuleStep";
 import CountdownOverlay from "../components/tutorial/CountdownOverlay";
 
@@ -36,6 +36,9 @@ const TutorialScreen: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [animatingRules, setAnimatingRules] = useState<AnimatingRule[]>([]);
   const [showCountdown, setShowCountdown] = useState(false);
+  const location = useLocation();
+  const { playerName, difficulty, answerOption, selectedPowerUps } =
+    location.state || {};
 
   useEffect(() => {
     if (activeIndex >= rules.length) {
@@ -85,9 +88,13 @@ const TutorialScreen: React.FC = () => {
 
       {showCountdown && (
         <CountdownOverlay
-          startAfter={500}
+          startAfter={1000}
           startNumber={10}
-          onComplete={() => navigate("/game")}
+          onComplete={() =>
+            navigate("/game", {
+              state: { playerName, difficulty, answerOption, selectedPowerUps },
+            })
+          }
         />
       )}
     </div>
