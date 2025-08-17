@@ -4,7 +4,6 @@ import SettingsPanel from "../components/startmenu/SettingsPanel";
 import LeaderboardPanel from "../components/startmenu/LeaderboardPanel";
 import StartPanel from "../components/startmenu/StartPanel";
 import SoundButton from "../components/audio/SoundButton";
-import { useNavigate } from "react-router-dom";
 
 type PanelType = "default" | "rules" | "settings" | "leaderboard" | "start";
 

@@ -5,27 +5,60 @@ import CountdownOverlay from "../components/tutorial/CountdownOverlay";
 
 const rules = [
   {
-    img: "/images/GameSession.png",
-    text: "Idee: Politische Aussagen den richtigen Parteien zuordnen – schnell, strategisch und im Team. Jede richtige Antwort bringt Punkte, jeder Fehler kostet Leben. Ziel: möglichst viele Punkte sammeln, Highscore knacken und politische Inhalte besser verstehen.",
+    img: "/images/Idea.jpg",
+    title: "Spielidee",
+    shortDescription: "Ordne politische Aussagen den richtigen Parteien zu.",
+    points: [
+      "Jede richtige Antwort bringt Punkte.",
+      "Jeder Fehler kostet ein Leben.",
+      "Ziel: Highscore knacken und politische Inhalte besser verstehen.",
+    ],
+  },
+  {
+    img: "/images/ScoreBoard.jpg",
+    title: "Punktesystem",
+    shortDescription: "Sammle möglichst viele Punkte und nutze Power-Ups.",
+    points: [
+      "Basis: 1000 Punkte pro richtiger Antwort.",
+      "Ohne Power-Ups: +15% Punktebonus.",
+      "Mit Power-Ups: -15% Punkteabzug.",
+      "Zeitbonus: +100 Punkte pro verbleibender Sekunde.",
+      "Schwierigere Level bringen mehr Punkte.",
+      "2% Chance auf doppelte Punkte pro Runde.",
+    ],
   },
   {
     img: "/images/GameSession.png",
-    text: "Punkte: Basis 1000 Punkte (Power-Ups -15%, ohne +15%). Zeitbonus: +100 Punkte pro Sekunde Restzeit. Schwierigkeitsgrad: höhere Level bringen mehr Punkte. Power-Ups: ohne +15%, mit -15%. Zufallseffekt: 2% Chance auf doppelte Punkte.",
+    title: "Rundenablauf",
+    shortDescription:
+      "Beantworte Aussagen innerhalb des Timers und nutze Power-Ups klug.",
+    points: [
+      "1 Aussage, 4 Antwortfelder pro Runde.",
+      "30 Sekunden Zeit, Signal bei 15s Restzeit.",
+      "Power-Ups: Fifty-Fifty, Doppelte Punkte, Zeit +10s, Zusatzinfos.",
+      "Bonusleben nach 5 richtigen Antworten in Folge.",
+    ],
   },
   {
-    img: "/images/GameSession.png",
-    text: "Runde: Aufbau 1 Aussage, 4 Felder. Zeit pro Aussage: 30s Timer, Rassel bei 15s. Power-Ups: Fifty-Fifty, Doppelte Punkte, Zeit +10s, Zusatzinfos. Rundenlänge: 3 Leben (Bonus nach 5er Streak).",
-  },
-  {
-    img: "/images/GameSession.png",
-    text: "Besondere Effekte: Saving Grace (1%): Überlebe Verlust letzten Lebens. Doppelte Punkte (2%): Diese Runde gibt doppelt so viel. Verdeckte Antwort (5%): Blockt eine falsche Möglichkeit. Quellenübersicht anzeigen.",
+    img: "/images/Idea2.jpg",
+    title: "Besondere Effekte",
+    shortDescription:
+      "Seltene Random Effekte können den Spielverlauf verändern.",
+    points: [
+      "Saving Grace: Überlebe den Verlust des letzten Lebens.",
+      "Doppelte Punkte: Diese Runde zählt doppelt.",
+      "Antwortblock: Eine falsche Option wird blockiert.",
+      "Quellenübersicht für jede Aussage einblendbar.",
+    ],
   },
 ];
 const corners = ["topLeft", "topRight", "bottomLeft", "bottomRight"] as const;
 
 type AnimatingRule = {
   img: string;
-  text: string;
+  title: string;
+  shortDescription: string;
+  points: string[];
   corner: (typeof corners)[number];
   isAnimating: boolean;
   id: number;
@@ -80,7 +113,9 @@ const TutorialScreen: React.FC = () => {
         <RuleStep
           key={rule.id}
           image={rule.img}
-          text={rule.text}
+          title={rule.title}
+          shortDescription={rule.shortDescription}
+          points={rule.points}
           corner={rule.corner}
           isAnimating={rule.isAnimating}
         />
