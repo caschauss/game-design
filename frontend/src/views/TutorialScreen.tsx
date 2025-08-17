@@ -109,9 +109,9 @@ const TutorialScreen: React.FC = () => {
 
   return (
     <div className="relative h-screen bg-zinc-900 text-white overflow-hidden">
-      {animatingRules.map((rule) => (
+      {animatingRules.map((rule, idx) => (
         <RuleStep
-          key={rule.id}
+          key={idx}
           image={rule.img}
           title={rule.title}
           shortDescription={rule.shortDescription}
