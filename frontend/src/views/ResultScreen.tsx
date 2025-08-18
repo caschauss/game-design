@@ -1,6 +1,8 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { powerUps } from "../data/data";
 import { getSendScoreboardEntry, reloadExpressionArray } from "../api/quizAPI";
+import SoundButton from "../components/audio/SoundButton";
+import { useEffect } from "react";
 
 export interface ScoreboardData {
   name: string;
@@ -13,6 +15,7 @@ export default function ResultScreen() {
   const navigate = useNavigate();
   const d = new Date();
   const day = d.toLocaleDateString("de-DE");
+  const resultSound = new Audio("/audio/sounds/UI/game_end.wav");
   const { state } = useLocation() as {
     state: {
       playerName: string;
@@ -56,6 +59,14 @@ export default function ResultScreen() {
       console.error("Fehler beim Senden des Scoreboard-Eintrags:", error);
     }
   };
+
+  useEffect(() => {
+    // Sound beim Laden abspielen
+    resultSound.currentTime = 0; // sicherstellen, dass er von Anfang an startet
+    resultSound
+      .play()
+      .catch((e) => console.log("Audio konnte nicht abgespielt werden:", e));
+  }, []);
 
   return (
     <div className="w-full flex flex-col items-center justify-center text-white px-8 py-16 gap-16">
@@ -101,9 +112,9 @@ export default function ResultScreen() {
         </div>
       </div>
 
-      <button onClick={handleBackToMain} className="primaryBtn">
+      <SoundButton onClick={handleBackToMain} className="primaryBtn">
         Zurück zum Hauptmenü
-      </button>
+      </SoundButton>
     </div>
   );
 }

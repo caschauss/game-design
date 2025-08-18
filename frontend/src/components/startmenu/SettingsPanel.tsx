@@ -1,4 +1,5 @@
 import { useSoundSettings } from "../audio/SoundSettings";
+import { InputSound } from "../audio/InputSound";
 
 export default function SettingsPanel() {
   const {
@@ -21,7 +22,7 @@ export default function SettingsPanel() {
 
         <div className="mb-4 flex flex-col justify-center items-start w-full">
           <p className="mb-1">Lautstärke</p>
-          <input
+          <InputSound
             type="range"
             min={0}
             max={100}
@@ -36,7 +37,7 @@ export default function SettingsPanel() {
           <p className="mb-1">Hintergrundmusik</p>
           <label className="flex items-center gap-2">
             <span>{musicEnabled ? "An" : "Aus"}</span>
-            <input
+            <InputSound
               className="size-6 accent-black"
               type="checkbox"
               checked={musicEnabled}
@@ -49,7 +50,7 @@ export default function SettingsPanel() {
           <p className="mb-1">Soundeffekte</p>
           <label className="flex items-center gap-2">
             <span>{soundEffectsEnabled ? "An" : "Aus"}</span>
-            <input
+            <InputSound
               className="size-6 accent-black"
               type="checkbox"
               checked={soundEffectsEnabled}

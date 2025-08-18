@@ -11,13 +11,36 @@ export const useScore = ({ initialScore = 0 }: UseScoreProps = {}) => {
     timeLeft: number,
     basePoints: number,
     difficulty: number,
-    hasPowerUps: boolean,
+    hasAnyPowerUps: boolean,
+    hasDoublePointsThisRound: boolean,
     eventMultiplier: number,
   ) => {
-    let points = basePoints * (hasPowerUps ? 0.15 : 1.15);
+    // 1) Startwert: Basis * 1.15, aber Malus wenn PowerUps vorhanden → nur 0.15
+    let points = basePoints * (hasAnyPowerUps ? 0.15 : 1.15);
+
+    // 2) Schwierigkeit einberechnen
     points *= difficulty;
+
+    // 3) Zeitbonus
     points += timeLeft * 100;
+
+    // 4) Doppelte Punkte aus PowerUp
+    if (hasDoublePointsThisRound) {
+      points *= 2;
+    }
+
+    // 5) Doppelte Punkte aus Event
     points *= eventMultiplier;
+
+    // Debug-Ausgabe
+    console.log({
+      difficulty,
+      hasAnyPowerUps,
+      hasDoublePointsThisRound,
+      eventMultiplier,
+      calculatedPoints: points,
+    });
+
     return Math.round(points);
   };
 
@@ -25,14 +48,16 @@ export const useScore = ({ initialScore = 0 }: UseScoreProps = {}) => {
     timeLeft: number,
     basePoints: number,
     difficulty: number,
-    hasPowerUps: boolean,
+    hasAnyPowerUps: boolean,
+    hasDoublePointsThisRound: boolean,
     eventMultiplier: number,
   ) => {
     const points = calculateScore(
       timeLeft,
       basePoints,
       difficulty,
-      hasPowerUps,
+      hasAnyPowerUps,
+      hasDoublePointsThisRound,
       eventMultiplier,
     );
     setScore((prev) => prev + points);

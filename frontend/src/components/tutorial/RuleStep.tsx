@@ -20,10 +20,20 @@ const RuleStep: React.FC<RuleStepProps> = ({
 }) => {
   // Basisposition: Mitte
   let positionClasses = "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2";
-  let scaleClasses = "scale-150"; // Standardmäßig etwas größer
-  const offset = "-m-2"; // Tailwind margin 1.5rem, adjust as needed
+  let scaleClasses = "scale-150";
+  const offset = "-m-2";
   const [visible, setVisible] = useState(false);
+  const swooshSound = new Audio("/audio/sounds/UI/swoosh.wav");
 
+  useEffect(() => {
+    if (isAnimating) {
+      swooshSound.currentTime = 0;
+      swooshSound.volume = 0.2;
+      swooshSound
+        .play()
+        .catch((e) => console.log("Audio konnte nicht abgespielt werden.", e));
+    }
+  }, [isAnimating]);
   useEffect(() => {
     // nach dem Mount sichtbar machen
     const t = setTimeout(() => setVisible(true), 10);
@@ -57,7 +67,7 @@ const RuleStep: React.FC<RuleStepProps> = ({
         className={`absolute w-1/2 h-1/2 rounded-2xl overflow-hidden shadow-2xl border-4 border-amber-200 transition-all duration-1000 ease-in-out ${positionClasses} ${scaleClasses}`}
       >
         <img src={image} alt={title} className="w-full h-full object-cover" />
-        <div className="absolute bottom-0 left-0 w-full h-1/3 bg-amber-200/70 backdrop-blur-md flex items-center justify-center p-8">
+        <div className="absolute bottom-0 left-0 w-full min-h-1/3 h-fit bg-amber-200/70 backdrop-blur-md flex items-center justify-center p-8">
           <div className="flex flex-col gap-2">
             <div className="flex gap-4 items-end">
               <h1 className="text-black text-xl sm:text-xl">

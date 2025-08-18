@@ -124,7 +124,7 @@ const TutorialScreen: React.FC = () => {
       {showCountdown && (
         <CountdownOverlay
           startAfter={1000}
-          startNumber={10}
+          startNumber={9}
           onComplete={() =>
             navigate("/game", {
               state: { playerName, difficulty, answerOption, selectedPowerUps },

@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+
 interface RandomEffectOverlayProps {
   text: string;
   color: string;
@@ -19,6 +21,14 @@ export default function RandomEffectOverlay({
   visible = true,
 }: RandomEffectOverlayProps) {
   const borderClass = COLOR_CLASSES[color] || "border-gray-400";
+  const soundRef = useRef(new Audio("/audio/sounds/UI/random_event2.wav"));
+
+  useEffect(() => {
+    if (visible) {
+      soundRef.current.currentTime = 0;
+      soundRef.current.play().catch(() => {});
+    }
+  }, [visible]);
 
   return (
     <div

@@ -64,6 +64,7 @@ export default function GameScreen() {
   // Neue Runde laden
   useEffect(() => {
     async function fetchNewRound() {
+      setEventMultiplier(1);
       setQuestionData(null);
       const data = await getRoundInformation();
       const round = data.roundInformation;
@@ -166,14 +167,17 @@ export default function GameScreen() {
     const isCorrect = short === questionData.correct;
 
     if (isCorrect) {
-      const multiplier = activeEvent?.id === "doublePoints" ? 2 : 1;
+      const isDoublePointsRound = chosenPowerUp === "doublePoints";
+      const hasAnyPowerUps =
+        selectedPowerUps.length > 0 || usedPowerUps.length > 0;
 
       addScore(
         currentRoundTimeLeft,
-        1000, // Basis
+        1000, // Basiswert
         questionData.difficulty,
-        selectedPowerUps.length > 0,
-        multiplier,
+        hasAnyPowerUps, // genereller Malus
+        isDoublePointsRound, // PowerUp aktiv diese Runde?
+        eventMultiplier, // Event-Multiplikator
       );
 
       setTimeout(async () => {

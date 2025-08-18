@@ -13,7 +13,10 @@ export default function ActivatePowerup({
   className = "",
   ...props
 }: ActivatePowerupProps) {
-  const playClickSound = useButtonSoundEffect("/audio/sounds/powerup.mp3");
+  const playClickSound = useButtonSoundEffect(
+    "/audio/sounds/UI/power_up.mp3",
+    0.7,
+  );
   const [internalActive, setInternalActive] = useState(false);
 
   const active = isActive ?? internalActive;

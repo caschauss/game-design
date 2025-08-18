@@ -1,4 +1,5 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
+import { useCountdownSound } from "../../hooks/useCountdownSound";
 
 interface CountdownBarProps {
   duration: number;
@@ -14,7 +15,6 @@ export default function CountdownBar({
   powerups,
 }: CountdownBarProps) {
   const FREEZE_DURATION = 15;
-
   const powerupList = powerups.split(",").map((p) => p.trim());
   const isTimeFreezeActive = powerupList.includes("timeFreeze");
 
@@ -22,34 +22,21 @@ export default function CountdownBar({
   const [freezeTimeLeft, setFreezeTimeLeft] = useState(FREEZE_DURATION);
   const [freezeActive, setFreezeActive] = useState(false);
 
-  const reminderSoundRef = useRef<HTMLAudioElement | null>(null);
-  const tickSoundRef = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    reminderSoundRef.current = new Audio("/audio/sounds/low-on-time.mp3");
-    tickSoundRef.current = new Audio("/audio/sounds/buttonClick.mp3");
-
-    // Optional: Tick-Sound soll leiser sein
-    tickSoundRef.current.volume = 0.5;
-  }, []);
-
-  // This controls visibility of freeze bar:
-  // Show bar if powerup active at all times
   const showFreezeBar = isTimeFreezeActive;
 
-  // Reset timers and freezeActive on duration/powerup change
+  // Countdown Sounds
+  const { playReminder, playTick, startTimer, stopTimer } = useCountdownSound();
+
   useEffect(() => {
-    if (!isTimeFreezeActive) {
-      setMainTimeLeft(duration);
-    }
+    startTimer(); // Timer starten
+    return () => stopTimer(); // Timer stoppen beim Unmount
+  }, [startTimer, stopTimer]);
+
+  // Reset timers on duration/powerup change
+  useEffect(() => {
+    setMainTimeLeft(duration);
     setFreezeTimeLeft(FREEZE_DURATION);
     setFreezeActive(false);
-
-    // Sound stoppen und auf Anfang zurücksetzen:
-    if (tickSoundRef.current) {
-      tickSoundRef.current.pause();
-      tickSoundRef.current.currentTime = 0;
-    }
   }, [duration, isTimeFreezeActive]);
 
   // Main timer countdown
@@ -64,11 +51,11 @@ export default function CountdownBar({
     }
 
     if (mainTimeLeft === Math.floor(duration / 2)) {
-      reminderSoundRef.current?.play();
+      playReminder();
     }
 
     if (mainTimeLeft <= 10) {
-      tickSoundRef.current?.play();
+      playTick();
     }
 
     onTimeUpdate(mainTimeLeft);
@@ -85,19 +72,15 @@ export default function CountdownBar({
     isTimeFreezeActive,
     freezeActive,
     duration,
+    playReminder,
+    playTick,
   ]);
 
   // Freeze bonus timer countdown
   useEffect(() => {
     if (!freezeActive) return;
 
-    // If freeze is active but powerup removed, complete immediately
-    if (!isTimeFreezeActive) {
-      onComplete();
-      return;
-    }
-
-    if (freezeTimeLeft <= 0) {
+    if (!isTimeFreezeActive || freezeTimeLeft <= 0) {
       onComplete();
       return;
     }
@@ -129,13 +112,11 @@ export default function CountdownBar({
             sek
           </span>
         </div>
-        <div className=" flex ">
+        <div className="flex">
           {showFreezeBar && (
             <div className="w-1/3 h-2 bg-red-700 rounded-l-full overflow-hidden relative">
               <div
-                className={`h-full bg-cyan-400 transition-all duration-1000 ease-linear ${
-                  freezeActive ? "" : ""
-                }`}
+                className="h-full bg-cyan-400 transition-all duration-1000 ease-linear"
                 style={{ width: `${freezePercent}%` }}
               />
             </div>

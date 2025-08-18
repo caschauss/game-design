@@ -16,7 +16,10 @@ const CountdownOverlay: React.FC<CountdownOverlayProps> = ({
   const [countdown, setCountdown] = useState<number | null>(null);
 
   useEffect(() => {
+    const countdownAudio = new Audio("/audio/sounds/UI/countdown.mp3");
+
     const timer = setTimeout(() => {
+      countdownAudio.play().catch(() => console.warn("Autoplay blockiert"));
       setCountdown(startNumber);
     }, startAfter);
 

@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useAnswerSound } from "../../hooks/useAnserSound";
 
 interface PartyOption {
   short: string;
@@ -13,7 +13,7 @@ interface AnswerGridProps {
   selectedAnswer: string | null;
   showFeedback: boolean;
   handleAnswer: (optionShort: string) => void;
-  disabledOptions?: string[]; // ✅ NEU
+  disabledOptions?: string[];
 }
 
 const borderStyles = [
@@ -29,19 +29,15 @@ export default function AnswerGrid({
   selectedAnswer,
   showFeedback,
   handleAnswer,
-  disabledOptions = [], // ✅ default leer
+  disabledOptions = [],
 }: AnswerGridProps) {
-  const correctSound = useRef(new Audio("/audio/sounds/correctAnswer.mp3"));
-  const wrongSound = useRef(new Audio("/audio/sounds/wrongAnswer.mp3"));
+  const { play: playSound } = useAnswerSound();
 
   const onClickAnswer = (optionShort: string) => {
     if (selectedAnswer || disabledOptions.includes(optionShort)) return;
 
     const isCorrect = optionShort === correctAnswer;
-
-    const sound = isCorrect ? correctSound : wrongSound;
-    sound.current.currentTime = 0;
-    sound.current.play().catch(() => {});
+    playSound(isCorrect);
 
     handleAnswer(optionShort);
   };

@@ -1,11 +1,11 @@
 import { useRef, useEffect, useCallback } from "react";
 import { useSoundSettings } from "../components/audio/SoundSettings";
 
-export function useButtonSoundEffect(audioUrl: string) {
+export function useButtonSoundEffect(audioUrl: string, volumeMultiplier = 1) {
   const { soundEffectsEnabled, volume } = useSoundSettings();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const baseVolumeMultiplier = 1.5;
+  const baseVolumeMultiplier = 1;
 
   useEffect(() => {
     audioRef.current = new Audio(audioUrl);
@@ -15,11 +15,23 @@ export function useButtonSoundEffect(audioUrl: string) {
     if (!soundEffectsEnabled || !audioRef.current) return;
 
     const audio = audioRef.current;
-    const adjustedVolume = Math.min(1.0, (volume / 100) * baseVolumeMultiplier);
-    audio.volume = adjustedVolume;
+
+    // Basislautstärke
+    const adjustedVolume = Math.min(
+      1.0,
+      (volume / 100) * baseVolumeMultiplier * volumeMultiplier,
+    );
+
+    // Leichte Zufallsvariation pro Klick
+    const volumeVariation = 0.7 + Math.random() * 0.7; // 0.9 - 1.1
+    const rateVariation = 0.95 + Math.random() * 0.3; // 0.95 - 1.05
+
+    audio.volume = Math.min(1, adjustedVolume * volumeVariation);
+    audio.playbackRate = rateVariation;
     audio.currentTime = 0;
+
     audio.play().catch(() => {
-      // Handle autoplay prevention silently
+      // autoplay prevention silently
     });
   }, [soundEffectsEnabled, volume]);
 
