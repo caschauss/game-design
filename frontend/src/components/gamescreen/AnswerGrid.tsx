@@ -1,4 +1,5 @@
 import { useAnswerSound } from "../../hooks/useAnserSound";
+import { useAnswerKeyboard } from "../../hooks/useAnswerKeyboard";
 
 interface PartyOption {
   short: string;
@@ -41,6 +42,15 @@ export default function AnswerGrid({
 
     handleAnswer(optionShort);
   };
+
+  useAnswerKeyboard({
+    isDisabled: !!selectedAnswer,
+    onSelect: (index) => {
+      const option = options[index];
+      if (!option) return;
+      onClickAnswer(option.short);
+    },
+  });
 
   return (
     <div className="h-1/2 w-full grid grid-rows-2 grid-cols-2 gap-6 p-6">
