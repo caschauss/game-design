@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useAnswerSound } from "../../hooks/useAnserSound";
 
 interface PartyOption {
   short: string;
@@ -13,7 +13,7 @@ interface AnswerGridProps {
   selectedAnswer: string | null;
   showFeedback: boolean;
   handleAnswer: (optionShort: string) => void;
-  disabledOptions?: string[]; // ✅ NEU
+  disabledOptions?: string[];
 }
 
 const borderStyles = [
@@ -29,19 +29,15 @@ export default function AnswerGrid({
   selectedAnswer,
   showFeedback,
   handleAnswer,
-  disabledOptions = [], // ✅ default leer
+  disabledOptions = [],
 }: AnswerGridProps) {
-  const correctSound = useRef(new Audio("/audio/sounds/correctAnswer.mp3"));
-  const wrongSound = useRef(new Audio("/audio/sounds/wrongAnswer.mp3"));
+  const { play: playSound } = useAnswerSound();
 
   const onClickAnswer = (optionShort: string) => {
     if (selectedAnswer || disabledOptions.includes(optionShort)) return;
 
     const isCorrect = optionShort === correctAnswer;
-
-    const sound = isCorrect ? correctSound : wrongSound;
-    sound.current.currentTime = 0;
-    sound.current.play().catch(() => {});
+    playSound(isCorrect);
 
     handleAnswer(optionShort);
   };
@@ -63,7 +59,7 @@ export default function AnswerGrid({
             : isSelected
               ? "bg-red-600"
               : "bg-zinc-800"
-          : "bg-zinc-800 hover:bg-zinc-700";
+          : "bg-zinc-800";
 
         return (
           <button
@@ -72,10 +68,16 @@ export default function AnswerGrid({
             onClick={() => onClickAnswer(option.short)}
             disabled={isDisabled}
             className={`${base} ${bgColor} ${borderStyles[idx]} ${
-              isDisabled ? "opacity-50 cursor-not-allowed" : ""
+              isDisabled ? "opacity-50 cursor-default" : ""
             }`}
           >
-            <div className="w-full h-full flex flex-row items-center gap-8 p-8 justify-between cursor-pointer">
+            <div
+              className={`w-full h-full flex flex-row items-center gap-8 p-8 justify-between  ${
+                isDisabled
+                  ? "opacity-50 cursor-default"
+                  : "cursor-pointer hover:bg-zinc-700"
+              }`}
+            >
               <div className="flex flex-col">
                 <div className="text-4xl w-full text-start font-black">
                   {option.short}

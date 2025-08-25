@@ -2,12 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useSoundSettings } from "./SoundSettings";
 
-const playlist = [
-  "/audio/bass.mp3",
-  "/audio/jazz.mp3",
-  "/audio/merkelLofi.mp3",
-  "/audio/verfassungsschutz.mp3",
-];
+const playlist = ["/audio/merkelLofi.mp3"];
 
 export default function BackgroundMusic() {
   const audioRef = useRef<HTMLAudioElement>(null);

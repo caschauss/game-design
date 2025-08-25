@@ -187,7 +187,7 @@ export default function LeaderboardPanel() {
               <th className="p-3 ">Name</th>
               <th className="p-3">Punkte</th>
               <th className="p-3">Datum</th>
-              <th className="p-3">Power-Ups</th>
+              <th className="p-3">PU</th>
             </tr>
           </thead>
           <tbody>

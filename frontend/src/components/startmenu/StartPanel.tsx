@@ -5,7 +5,8 @@ import {
   handleCallNewRound,
   setDifficulty as sendDifficultyToBackend,
 } from "../../api/quizAPI";
-import PowerupButton from "../audio/PowerupButton";
+import SoundButton from "../audio/SoundButton";
+import { InputSound } from "../audio/InputSound";
 
 export default function StartPanel() {
   const [playerName, setPlayerName] = useState("");
@@ -14,6 +15,16 @@ export default function StartPanel() {
   const [selected, setSelected] = useState<string[]>([]);
   const navigate = useNavigate();
   const [showWarning, setShowWarning] = useState(false);
+  const startSound = new Audio("/audio/sounds/UI/game_start2.wav");
+
+  const startingSound = () => {
+    // Sound beim Laden abspielen
+    startSound.currentTime = 0; // sicherstellen, dass er von Anfang an startet
+    startSound.volume = 0.3;
+    startSound
+      .play()
+      .catch((e) => console.log("Audio konnte nicht abgespielt werden:", e));
+  };
 
   const handleStart = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +36,9 @@ export default function StartPanel() {
     sendDifficultyToBackend(difficulty);
     handleCallNewRound();
 
-    navigate("/game", {
+    startingSound();
+
+    navigate("/tutorial", {
       state: {
         playerName,
         difficulty,
@@ -85,13 +98,13 @@ export default function StartPanel() {
               </p>
             )}
 
-            <button
+            <SoundButton
               type="button"
               onClick={randomName}
-              className="bg-zinc-900 text-white rounded-full py-2 px-4 font-black uppercase w-fit mx-auto"
+              className="bg-zinc-900 text-white rounded-full py-2 px-4 font-black uppercase w-fit mx-auto hover:opacity-75"
             >
               Namen Generieren
-            </button>
+            </SoundButton>
           </div>
           {/* Schwierigkeitsstufe */}
           <div className="my-2 w-full">
@@ -100,7 +113,7 @@ export default function StartPanel() {
             </p>
 
             <div className="mb-4 flex flex-col justify-center items-start w-full accent-black max-w-72 mx-auto">
-              <input
+              <InputSound
                 type="range"
                 min={1}
                 max={3}
@@ -127,7 +140,7 @@ export default function StartPanel() {
                   key={label}
                   className="flex flex-col items-center gap-1 w-1/3 text-center"
                 >
-                  <input
+                  <InputSound
                     type="radio"
                     name="answer-options"
                     checked={answerOption === label}
@@ -164,7 +177,7 @@ export default function StartPanel() {
                       key={powerUp.id}
                       className="flex flex-col items-center gap-1"
                     >
-                      <PowerupButton
+                      <SoundButton
                         type="button"
                         onClick={() =>
                           answerOption === "2x Auswählen" &&
@@ -175,12 +188,13 @@ export default function StartPanel() {
                         isActive={isSelected}
                         className={`aspect-square w-10 rounded-md flex items-center justify-center font-bold text-white
                           ${powerUp.color}
-                          ${isDisabled ? "opacity-25 cursor-not-allowed" : "opacity-80 hover:opacity-100"}
+                          ${isSelected ? "outline-2 outline-offset-2 outline-zinc-900" : ""}
+                          ${isDisabled ? "opacity-25 cursor-not-allowed" : "opacity-80 hover:opacity-50 "}
                         `}
                         title={powerUp.label}
                       >
                         {powerUp.icon}
-                      </PowerupButton>
+                      </SoundButton>
                       <span className="text-sm text-center">
                         {powerUp.label}
                       </span>
@@ -190,13 +204,13 @@ export default function StartPanel() {
               </div>
             </div>
           ) : null}
-          <button
+          <SoundButton
             type="submit"
             className=" cursor-pointer italic mt-8 p-2 bg-zinc-900 text-white rounded-lg w-48 text-xl uppercase font-semibold"
           >
             {" "}
             Los Gehts!
-          </button>
+          </SoundButton>
         </form>
       </div>
     </div>

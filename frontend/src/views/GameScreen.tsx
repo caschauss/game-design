@@ -2,8 +2,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import GameHeader from "../components/gamescreen/GameHeader";
 import AnswerGrid from "../components/gamescreen/AnswerGrid";
+import RandomEffectOverlay from "../components/gamescreen/RandomEffectOverlay";
 import { getRoundInformation, handleCallNewRound } from "../api/quizAPI";
 import { PARTIES } from "../data/data";
+import { useRandomEvents } from "../hooks/useRandomEvents";
+import { useDisabledOptions } from "../hooks/useDisabledOptions";
+import { useScore } from "../hooks/useScore";
 
 type PartyKey = keyof typeof PARTIES;
 
@@ -27,17 +31,6 @@ interface QuestionData {
 
 export default function GameScreen() {
   const navigate = useNavigate();
-
-  const [currentRound, setCurrentRound] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [score, setScore] = useState(0);
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [questionData, setQuestionData] = useState<QuestionData | null>(null);
-  const [currentRoundTimeLeft, setCurrentRoundTimeLeft] = useState(0);
-  const [lives, setLives] = useState(3);
-  const [hasAnswered, setHasAnswered] = useState(false);
-  const [disabledOptions, setDisabledOptions] = useState<string[]>([]);
-
   const { state } = useLocation() as {
     state: {
       playerName: string;
@@ -48,6 +41,12 @@ export default function GameScreen() {
     };
   };
 
+  const [currentRound, setCurrentRound] = useState(0);
+  const [questionData, setQuestionData] = useState<QuestionData | null>(null);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [lives, setLives] = useState(3);
+  const [hasAnswered, setHasAnswered] = useState(false);
   const [selectedPowerUps, setSelectedPowerUps] = useState<string[]>(
     state.selectedPowerUps || [],
   );
@@ -55,33 +54,34 @@ export default function GameScreen() {
     state.usedPowerUps || [],
   );
   const [chosenPowerUp, setChosenPowerUp] = useState<string | null>(null);
+  const [currentRoundTimeLeft, setCurrentRoundTimeLeft] = useState(0);
+  const { activeEvent, setActiveEvent, triggerRandomEvent } = useRandomEvents();
+  const { disabledOptions, applyFiftyFifty, applySkipWrong, resetDisabled } =
+    useDisabledOptions();
+  const { score, addScore } = useScore({ initialScore: 0 });
+  const [eventMultiplier, setEventMultiplier] = useState(1);
 
-  const activatePowerUp = (id: string) => {
-    if (!selectedPowerUps.includes(id)) return;
-
-    setSelectedPowerUps((prev) => prev.filter((p) => p !== id));
-    setUsedPowerUps((prev) => [...prev, id]);
-    setChosenPowerUp(id);
-
-    if (id === "fiftyfifty" && questionData) {
-      const wrongOptions = questionData.options.filter(
-        (opt) => opt.short !== questionData.correct,
-      );
-      const toDisable = wrongOptions
-        .sort(() => 0.5 - Math.random())
-        .slice(0, 2)
-        .map((opt) => opt.short);
-      setDisabledOptions(toDisable);
-    }
-  };
-
+  // Neue Runde laden
   useEffect(() => {
     async function fetchNewRound() {
+      setEventMultiplier(1);
       setQuestionData(null);
       const data = await getRoundInformation();
       const round = data.roundInformation;
+      if (!round) return;
 
-      // ✅ Explizite Abfrage: wenn party === "FINISHED"
+      const event = triggerRandomEvent("preRound");
+      if (event && event.type === "preRound") {
+        setActiveEvent(event); // Overlay sichtbar
+        if (event?.id === "doublePoints") {
+          setEventMultiplier(2);
+          console.log(eventMultiplier);
+        } else {
+          setEventMultiplier(1);
+          console.log(eventMultiplier);
+        }
+      }
+
       if (round?.party === "FINISHED") {
         navigate("/result", {
           state: {
@@ -96,11 +96,7 @@ export default function GameScreen() {
       }
 
       const correctKey = round.party as PartyKey;
-
-      if (!correctKey || !PARTIES[correctKey]) {
-        console.warn("Unknown or missing party key:", correctKey);
-        return;
-      }
+      if (!correctKey || !PARTIES[correctKey]) return;
 
       const otherKeys = Object.keys(PARTIES).filter((k) => k !== correctKey);
       const shuffled = otherKeys.sort(() => 0.5 - Math.random()).slice(0, 3);
@@ -129,15 +125,37 @@ export default function GameScreen() {
       setCurrentRoundTimeLeft(30);
       setHasAnswered(false);
       setChosenPowerUp(null);
-      setDisabledOptions([]);
+      resetDisabled();
     }
 
     fetchNewRound();
   }, [currentRound]);
 
-  const handleTimeUpdate = (timeLeft: number) => {
+  const handleTimeUpdate = (timeLeft: number) =>
     setCurrentRoundTimeLeft(timeLeft);
+
+  const activatePowerUp = (id: string) => {
+    if (!selectedPowerUps.includes(id)) return;
+    setSelectedPowerUps((prev) => prev.filter((p) => p !== id));
+    setUsedPowerUps((prev) => [...prev, id]);
+    setChosenPowerUp(id);
+
+    if (id === "fiftyfifty" && questionData) {
+      applyFiftyFifty({
+        correct: questionData.correct,
+        options: questionData.options,
+      });
+    }
   };
+
+  useEffect(() => {
+    if (activeEvent?.id === "skipWrong" && questionData) {
+      applySkipWrong({
+        correct: questionData.correct,
+        options: questionData.options,
+      });
+    }
+  }, [activeEvent, questionData]);
 
   const handleAnswer = async (short: string) => {
     if (hasAnswered || selectedAnswer || showFeedback || !questionData) return;
@@ -149,65 +167,79 @@ export default function GameScreen() {
     const isCorrect = short === questionData.correct;
 
     if (isCorrect) {
-      let basePoints = 1000;
-      const timeBonus = currentRoundTimeLeft * 100;
+      const isDoublePointsRound = chosenPowerUp === "doublePoints";
+      const hasAnyPowerUps =
+        selectedPowerUps.length > 0 || usedPowerUps.length > 0;
 
-      if (state.selectedPowerUps && state.selectedPowerUps.length > 0) {
-        basePoints *= 0.15;
-      } else {
-        basePoints *= 1.15;
-      }
-
-      const newScore = basePoints + timeBonus;
-      setScore((prev) => prev + newScore);
+      addScore(
+        currentRoundTimeLeft,
+        1000, // Basiswert
+        questionData.difficulty,
+        hasAnyPowerUps, // genereller Malus
+        isDoublePointsRound, // PowerUp aktiv diese Runde?
+        eventMultiplier, // Event-Multiplikator
+      );
 
       setTimeout(async () => {
-        const nextRound = currentRound + 1;
-
-        if (nextRound % 5 === 0 && lives < 3) {
+        if ((currentRound + 1) % 5 === 0 && lives < 3)
           setLives((prev) => Math.min(prev + 1, 3));
-        }
 
         await handleCallNewRound();
         setSelectedAnswer(null);
         setShowFeedback(false);
-        setCurrentRound(nextRound);
+        setCurrentRound((prev) => prev + 1);
       }, 3000);
-    } else {
-      setLives((prevLives) => {
-        const newLives = prevLives - 1;
 
-        if (newLives <= 0) {
-          setTimeout(() => {
-            navigate("/result", {
-              state: {
-                playerName: state.playerName,
-                score,
-                total: currentRound + 1,
-                selectedPowerUps: state.selectedPowerUps,
-              },
-            });
-          }, 5000);
-        } else {
-          setTimeout(async () => {
-            await handleCallNewRound();
-            setSelectedAnswer(null);
-            setShowFeedback(false);
-            setCurrentRound((prev) => prev + 1);
-          }, 5000);
-        }
-
-        return newLives;
-      });
+      return;
     }
+
+    // Falsche Antwort
+    if (lives === 1) {
+      const event = triggerRandomEvent("postRound");
+      if (event?.id === "savingGrace") {
+        setActiveEvent(event); // Overlay sichtbar
+        setTimeout(async () => {
+          await handleCallNewRound();
+          setSelectedAnswer(null);
+          setShowFeedback(false);
+          setCurrentRound((prev) => prev + 1);
+        }, 3000);
+        return;
+      }
+    }
+
+    setLives((prev) => prev - 1);
+    setTimeout(async () => {
+      if (lives - 1 <= 0) {
+        navigate("/result", {
+          state: {
+            playerName: state.playerName,
+            score,
+            total: currentRound + 1,
+            selectedPowerUps,
+          },
+        });
+      } else {
+        await handleCallNewRound();
+        setSelectedAnswer(null);
+        setShowFeedback(false);
+        setCurrentRound((prev) => prev + 1);
+      }
+    }, 3000);
   };
 
-  if (!questionData) {
+  if (!questionData)
     return <div className="p-8 text-white">Lade Zitate...</div>;
-  }
 
   return (
-    <div className="pt-12 h-full text-white">
+    <div className="pt-12 h-full text-white relative">
+      {activeEvent && (
+        <RandomEffectOverlay
+          text={activeEvent.text}
+          color={activeEvent.color}
+        />
+      )}
+
       <GameHeader
         playerName={state.playerName}
         selectedPowerUps={selectedPowerUps}
@@ -225,6 +257,7 @@ export default function GameScreen() {
         onTimeUp={() => handleAnswer("wrong")}
         onTimeUpdate={handleTimeUpdate}
         showFeedback={showFeedback}
+        eventMultiplier={eventMultiplier}
       />
 
       <AnswerGrid

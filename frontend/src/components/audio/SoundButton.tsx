@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useButtonSoundEffect } from "../../hooks/useButtonSoundEffect";
 
 interface SoundButtonProps
@@ -13,22 +13,42 @@ export default function SoundButton({
   className = "",
   ...props
 }: SoundButtonProps) {
-  const playClickSound = useButtonSoundEffect("/audio/sounds/buttonClick.mp3");
-  const [internalActive, setInternalActive] = useState(false);
+  const playSelectSound = useButtonSoundEffect(
+    "/audio/sounds/UI/button_select.mp3",
+  );
+  const playHoverSound = useButtonSoundEffect(
+    "/audio/sounds/UI/button_hover.mp3",
+  );
 
+  const [internalActive, setInternalActive] = useState(false);
   const active = isActive ?? internalActive;
 
+  // --- tiny throttle just for hover ---
+  const lastHoverRef = useRef(0);
+  const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const now = Date.now();
+    if (now - lastHoverRef.current > 150) {
+      // only play every 150ms
+      playHoverSound();
+      lastHoverRef.current = now;
+    }
+    props.onMouseEnter?.(e);
+  };
+
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    playClickSound();
+    playSelectSound();
     setInternalActive(true);
-    if (props.onClick) props.onClick(e);
+    props.onClick?.(e);
   };
 
   return (
     <button
       {...props}
       onClick={handleClick}
-      className={`${className} ${active ? "bg-amber-200 hover:text-white text-black" : ""}`}
+      onMouseEnter={handleMouseEnter}
+      className={`${className} ${
+        active ? "bg-amber-200 hover:text-white text-black" : ""
+      }`}
     >
       {children}
     </button>
