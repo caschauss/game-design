@@ -121,6 +121,7 @@ export const controller_newRound = () => {
     // Fallback for empty Array
     if (expressionArray.length === 0) {
         model_setRoundInformation(expression);
+        controller_readExpressions(); // Reloading DB in background when Array is Empty
     }
 
     // Searching for matching difficulty
