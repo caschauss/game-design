@@ -5,7 +5,7 @@ import CountdownOverlay from "../components/tutorial/CountdownOverlay";
 
 const rules = [
   {
-    img: "/images/Idea.jpg",
+    img: "/images/GameDesignSpieler.png",
     title: "Spielidee",
     shortDescription: "Ordne politische Aussagen den richtigen Parteien zu.",
     points: [
@@ -15,7 +15,7 @@ const rules = [
     ],
   },
   {
-    img: "/images/ScoreBoard.jpg",
+    img: "/images/GameDesignSpieler4.png",
     title: "Punktesystem",
     shortDescription: "Sammle möglichst viele Punkte und nutze Power-Ups.",
     points: [
@@ -40,7 +40,7 @@ const rules = [
     ],
   },
   {
-    img: "/images/Idea2.jpg",
+    img: "/images/GameDesignSpieler2.png",
     title: "Besondere Effekte",
     shortDescription:
       "Seltene Random Effekte können den Spielverlauf verändern.",

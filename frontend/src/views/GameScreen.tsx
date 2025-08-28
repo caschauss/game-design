@@ -188,7 +188,7 @@ export default function GameScreen() {
         setSelectedAnswer(null);
         setShowFeedback(false);
         setCurrentRound((prev) => prev + 1);
-      }, 3000);
+      }, 4000);
 
       return;
     }
@@ -203,7 +203,7 @@ export default function GameScreen() {
           setSelectedAnswer(null);
           setShowFeedback(false);
           setCurrentRound((prev) => prev + 1);
-        }, 3000);
+        }, 4000);
         return;
       }
     }
@@ -225,7 +225,7 @@ export default function GameScreen() {
         setShowFeedback(false);
         setCurrentRound((prev) => prev + 1);
       }
-    }, 3000);
+    }, 4000);
   };
 
   if (!questionData)
