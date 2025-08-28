@@ -16,5 +16,7 @@ You can select a number of different power-ups from the start menu. You can eith
 - 50 %: Removes two false options.
 - 2x Points: Double point modifier for the current round.
 - +10 s: Adds ten seconds to the current timer.
+# Sources
+Each of the used quotes is provided with a source links for easy validation. You can find them by exploring the database found in `backend/src/data.db`.
 # License
 You can use this Game under the [Creative Commons BY-NC license](https://en.wikipedia.org/wiki/Creative_Commons_NonCommercial_license). Please link to [the original repository](https://github.com/caschauss/game-design) if you decide to expand on it.
