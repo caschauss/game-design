@@ -82,7 +82,8 @@ export default function RulesPanel() {
                 </ul>
                 <p className="mt-2">
                   <a
-                    href="#"
+                    target="_blank"
+                    href="https://github.com/caschauss/politikschMERZen"
                     className="text-blue-800 underline hover:text-blue-300"
                   >
                     Quellenübersicht anzeigen
